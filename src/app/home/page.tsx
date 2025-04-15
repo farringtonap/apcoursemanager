@@ -11,10 +11,10 @@ const HomePage: React.FC = () => {
     e.preventDefault();
     // Dummy recommendation logic – replace with your actual logic.
     const recommendations = [
-      "AP Calculus",
-      "AP Physics",
-      "AP Computer Science",
-      "AP Biology",
+      'AP Calculus',
+      'AP Physics',
+      'AP Computer Science',
+      'AP Biology',
     ];
     setRecommendedClasses(recommendations);
   };
@@ -82,9 +82,16 @@ const HomePage: React.FC = () => {
             <Card.Body>
               <Card.Title>Benefits & Application</Card.Title>
               <Card.Text>
-                <strong>Benefits:</strong> Earn college credit and develop skills to help you succeed in college.
-                <br/><br/>
-                <strong>Apply:</strong> Contact Mrs. Koanui or the respective AP teacher for an application when registration opens. After filling out your information, be sure to get the signatures from your school counselor and your parent/guardian before submitting to Mrs. Koanui.
+                <strong>Benefits:</strong>
+                {' '}
+                Earn college credit and develop skills to help you succeed in college.
+                <br />
+                <br />
+                <strong>Apply:</strong>
+                {' '}
+                Contact Mrs. Koanui or the respective AP teacher for an application when registration opens.
+                After filling out your information, be sure to get the signatures from your school counselor
+                and your parent/guardian before submitting to Mrs. Koanui.
               </Card.Text>
             </Card.Body>
           </Card>
@@ -96,8 +103,10 @@ const HomePage: React.FC = () => {
               <Card.Title>No-Drop Policy</Card.Title>
               <Card.Text>
                 There is a strict no-drop policy for an AP class unless there is an exceptional reason.
-                <br/><br/>
-                If a student wishes to drop, they must schedule a meeting with the AP Coordinator, the VP, and their parents to discuss the reasons.
+                <br />
+                <br />
+                If a student wishes to drop, they must schedule a meeting with the AP Coordinator,
+                the VP, and their parents to discuss the reasons.
               </Card.Text>
             </Card.Body>
           </Card>
