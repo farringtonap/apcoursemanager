@@ -1,7 +1,5 @@
 'use client';
 
-// <-- Add this to indicate Client Component
-
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, Form, Card } from 'react-bootstrap';
 
@@ -11,18 +9,29 @@ const HomePage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const recommendations = ['AP Calculus', 'AP Physics', 'AP Computer Science', 'AP Biology'];
+    // Dummy recommendation logic – replace with your actual logic.
+    const recommendations = [
+      "AP Calculus",
+      "AP Physics",
+      "AP Computer Science",
+      "AP Biology",
+    ];
     setRecommendedClasses(recommendations);
   };
 
   return (
     <Container className="py-5">
+      {/* Top Section: Form & Recommendations */}
       <Row className="justify-content-center">
         <Col md={8}>
-          <Card>
+          <Card className="mb-4">
             <Card.Body>
-              <Card.Title className="text-center">AP Class Recommendations</Card.Title>
-              <p className="text-center">Find the best AP classes for your interests!</p>
+              <Card.Title className="text-center">
+                AP Class Recommendations
+              </Card.Title>
+              <p className="text-center">
+                Find the best AP classes for your interests!
+              </p>
               <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formInterests">
                   <Form.Label>Your Interests</Form.Label>
@@ -41,7 +50,7 @@ const HomePage: React.FC = () => {
           </Card>
 
           {recommendedClasses.length > 0 && (
-            <Card className="mt-4">
+            <Card className="mb-4">
               <Card.Body>
                 <Card.Title>Recommended AP Classes</Card.Title>
                 <ul>
@@ -55,31 +64,41 @@ const HomePage: React.FC = () => {
         </Col>
       </Row>
 
-      {/* Informational Boxes */}
+      {/* New Informational Boxes */}
       <Row className="justify-content-center mt-5">
-        <Col md={5} className="mb-4">
+        <Col md={4} className="mb-4">
           <Card>
             <Card.Body>
-              <Card.Title>Purpose of the Website</Card.Title>
-              <p>
-                This website helps students find the most relevant AP classes based on their interests
-                and academic background. It provides personalized recommendations to help students make
-                informed decisions about their AP course selections.
-              </p>
+              <Card.Title>Purpose</Card.Title>
+              <Card.Text>
+                To prepare students for the pace and academic rigor of college-level courses.
+              </Card.Text>
             </Card.Body>
           </Card>
         </Col>
 
-        <Col md={5} className="mb-4">
+        <Col md={4} className="mb-4">
           <Card>
             <Card.Body>
-              <Card.Title>How It Works</Card.Title>
-              <p>
-                Students input their academic interests, and the system uses
-                an intelligent recommendation engine to suggest the most relevant AP classes.
-                The goal is to help students discover courses that align with
-                their goals and academic strengths.
-              </p>
+              <Card.Title>Benefits & Application</Card.Title>
+              <Card.Text>
+                <strong>Benefits:</strong> Earn college credit and develop skills to help you succeed in college.
+                <br/><br/>
+                <strong>Apply:</strong> Contact Mrs. Koanui or the respective AP teacher for an application when registration opens. After filling out your information, be sure to get the signatures from your school counselor and your parent/guardian before submitting to Mrs. Koanui.
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col md={4} className="mb-4">
+          <Card>
+            <Card.Body>
+              <Card.Title>No-Drop Policy</Card.Title>
+              <Card.Text>
+                There is a strict no-drop policy for an AP class unless there is an exceptional reason.
+                <br/><br/>
+                If a student wishes to drop, they must schedule a meeting with the AP Coordinator, the VP, and their parents to discuss the reasons.
+              </Card.Text>
             </Card.Body>
           </Card>
         </Col>
