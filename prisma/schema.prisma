@@ -129,3 +129,18 @@ model GradeLevel {
 
   @@map("grade_levels")
 }
+
+
+// User and Role
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  role     Role   @default(USER)
+}
