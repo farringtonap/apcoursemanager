@@ -1,4 +1,6 @@
-'use client'; // <-- Add this to indicate Client Component
+'use client';
+
+// <-- Add this to indicate Client Component
 
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, Form, Card } from 'react-bootstrap';
@@ -9,7 +11,7 @@ const HomePage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const recommendations = ["AP Calculus", "AP Physics", "AP Computer Science", "AP Biology"];
+    const recommendations = ['AP Calculus', 'AP Physics', 'AP Computer Science', 'AP Biology'];
     setRecommendedClasses(recommendations);
   };
 
@@ -43,8 +45,8 @@ const HomePage: React.FC = () => {
               <Card.Body>
                 <Card.Title>Recommended AP Classes</Card.Title>
                 <ul>
-                  {recommendedClasses.map((className, index) => (
-                    <li key={index}>{className}</li>
+                  {recommendedClasses.map((className) => (
+                    <li key={className}>{className}</li>
                   ))}
                 </ul>
               </Card.Body>
@@ -60,7 +62,9 @@ const HomePage: React.FC = () => {
             <Card.Body>
               <Card.Title>Purpose of the Website</Card.Title>
               <p>
-                This website helps students find the most relevant AP classes based on their interests and academic background. It provides personalized recommendations to help students make informed decisions about their AP course selections.
+                This website helps students find the most relevant AP classes based on their interests
+                and academic background. It provides personalized recommendations to help students make
+                informed decisions about their AP course selections.
               </p>
             </Card.Body>
           </Card>
@@ -71,7 +75,10 @@ const HomePage: React.FC = () => {
             <Card.Body>
               <Card.Title>How It Works</Card.Title>
               <p>
-                Students input their academic interests, and the system uses an intelligent recommendation engine to suggest the most relevant AP classes. The goal is to help students discover courses that align with their goals and academic strengths.
+                Students input their academic interests, and the system uses
+                an intelligent recommendation engine to suggest the most relevant AP classes.
+                The goal is to help students discover courses that align with
+                their goals and academic strengths.
               </p>
             </Card.Body>
           </Card>
