@@ -1,21 +1,5 @@
-/*
-  Warnings:
-
-  - You are about to drop the `Stuff` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropTable
-DROP TABLE "Stuff";
-
--- DropTable
-DROP TABLE "User";
-
--- DropEnum
-DROP TYPE "Condition";
-
--- DropEnum
-DROP TYPE "Role";
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
 
 -- CreateTable
 CREATE TABLE "ap_classes" (
@@ -67,6 +51,16 @@ CREATE TABLE "grade_levels" (
 );
 
 -- CreateTable
+CREATE TABLE "User" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'USER',
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_APClassPrerequisites" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
@@ -98,6 +92,9 @@ CREATE UNIQUE INDEX "subjects_name_key" ON "subjects"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "prerequisites_subjectId_key" ON "prerequisites"("subjectId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_APClassPrerequisites_AB_unique" ON "_APClassPrerequisites"("A", "B");
