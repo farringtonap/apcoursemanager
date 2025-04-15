@@ -1,35 +1,131 @@
-generator client {
-  provider = "prisma-client-js"
-}
+// prisma/schema.prisma
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
-  role     Role   @default(USER)
+generator client {
+  provider = "prisma-client-js"
 }
 
-model Stuff {
-  id        Int       @id @default(autoincrement())
-  name      String
-  quantity  Int
-  condition Condition @default(good)
-  owner     String
+///
+/// Model: APClass
+/// Purpose: Represents an AP class with its details and relationships.
+/// Fields:
+/// - name: Name of the course.
+/// - description: Description of the course.
+/// - resources: Optional string containing URLs or info about resources.
+/// - offered: Boolean flag indicating if the course is offered next year.
+/// Relationships:
+/// - One-to-one with Teacher (each AP class is assigned one teacher).
+/// - Many-to-one with Subject (each AP class belongs to one Subject).
+/// - Many-to-many with PreRequisite (an AP class can require multiple prerequisites).
+/// - Many-to-many with GradeLevel (indicating which grades are eligible).
+///
+model APClass {
+  id             Int           @id @default(autoincrement())
+  name           String
+  description    String
+  resources      String?
+  offered        Boolean
+  subjectId      Int
+  teacherId      Int           @unique  // one-to-one: each teacher teaches one AP class
+
+  // Relations:
+  subject        Subject       @relation(fields: [subjectId], references: [id])
+  teacher        Teacher       @relation(fields: [teacherId], references: [id])
+  prerequisites  PreRequisite[] @relation("APClassPrerequisites")
+  gradeLevels    GradeLevel[]  @relation("APClassGradeLevels")
+
+  @@map("ap_classes")
 }
 
-enum Role {
-  USER
-  ADMIN
+///
+/// Model: Teacher
+/// Purpose: Represents a teacher associated with a subject and AP class.
+/// Fields:
+/// - firstName, lastName, email.
+/// - subjectId: Connects the teacher to a Subject (one-to-one).
+/// Relationships:
+/// - One-to-one with APClass (the AP class they teach).
+/// - One-to-one with Subject (each teacher teaches exactly one subject).
+///
+model Teacher {
+  id         Int      @id @default(autoincrement())
+  firstName  String
+  lastName   String
+  email      String   @unique
+  subjectId  Int      @unique
+
+  // Relations:
+  subject    Subject  @relation(fields: [subjectId], references: [id])
+  // Optionally, a teacher may have an associated AP class.
+  apClass    APClass? 
+
+  @@map("teachers")
 }
 
-enum Condition {
-  excellent
-  good
-  fair
-  poor
+///
+/// Model: Subject
+/// Purpose: Represents the academic subject for AP classes.
+/// Fields:
+/// - name: Name of the subject (e.g., Math, Science).
+/// Relationships:
+/// - One-to-many with APClass (one subject can have multiple AP classes).
+/// - One-to-one with Teacher (each subject is taught by one teacher).
+/// - One-to-one with PreRequisite (each subject may have one prerequisite defined).
+///
+model Subject {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+
+  // Relations:
+  apClasses    APClass[]
+  teacher      Teacher?      // inverse relation from Teacher
+  prerequisite PreRequisite? // inverse one-to-one relation with PreRequisite
+
+  @@map("subjects")
+}
+
+///
+/// Model: PreRequisite
+/// Purpose: Represents a prerequisite requirement for an AP class.
+/// Fields:
+/// - name: Name of the prerequisite.
+/// Relationships:
+/// - One-to-one with Subject (each prerequisite is uniquely linked to a subject).
+/// - Many-to-many with APClass (a prerequisite can be required by multiple AP classes).
+/// - Many-to-many with GradeLevel (defines applicable grade levels for the prerequisite).
+///
+model PreRequisite {
+  id          Int         @id @default(autoincrement())
+  name        String
+  subjectId   Int         @unique   // enforcing one-to-one relation with Subject
+
+  // Relations:
+  subject     Subject     @relation(fields: [subjectId], references: [id])
+  apClasses   APClass[]   @relation("APClassPrerequisites")
+  gradeLevels GradeLevel[]@relation("PreRequisiteGradeLevels")
+
+  @@map("prerequisites")
+}
+
+///
+/// Model: GradeLevel
+/// Purpose: Represents a school grade level (e.g., 9, 10, 11, 12) for which an AP class or prerequisite is open.
+/// Fields:
+/// - level: The numerical grade level.
+/// Relationships:
+/// - Many-to-many with APClass and PreRequisite.
+///
+model GradeLevel {
+  id            Int          @id @default(autoincrement())
+  level         Int
+
+  // Relations:
+  apClasses     APClass[]    @relation("APClassGradeLevels")
+  preRequisites PreRequisite[] @relation("PreRequisiteGradeLevels")
+
+  @@map("grade_levels")
 }
