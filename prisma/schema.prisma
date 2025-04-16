@@ -82,7 +82,7 @@ model Subject {
 
   apClasses    APClass[]
   teachers     Teacher[]     
-  prerequisite PreRequisite?
+  prerequisite PreRequisite[]
 
   @@map("subjects")
 }
@@ -93,14 +93,14 @@ model Subject {
 /// Fields:
 /// - name: Name of the prerequisite.
 /// Relationships:
-/// - One-to-one with Subject (each prerequisite is uniquely linked to a subject).
+/// - Many-to-one with Subject (each subject can have multiple prerequisites).
 /// - Many-to-many with APClass (a prerequisite can be required by multiple AP classes).
 /// - Many-to-many with GradeLevel (defines applicable grade levels for the prerequisite).
 ///
 model PreRequisite {
   id          Int         @id @default(autoincrement())
   name        String
-  subjectId   Int         @unique   // enforcing one-to-one relation with Subject
+  subjectId   Int         
 
   // Relations:
   subject     Subject     @relation(fields: [subjectId], references: [id])
