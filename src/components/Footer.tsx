@@ -1,18 +1,29 @@
-import { Col, Container } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
+import { BoxArrowUpRight, Github } from 'react-bootstrap-icons';
 
 /** The Footer appears at the bottom of every page. Rendered by the App Layout component. */
 const Footer = () => (
-  <footer className="mt-auto py-3 bg-light">
-    <Container>
-      <Col className="text-center">
-        Department of Information and Computer Sciences
-        <br />
-        University of Hawaii
-        <br />
-        Honolulu, HI 96822
-        <br />
-        <a href="http://ics-software-engineering.github.io/nextjs-application-template">Template Home Page</a>
-      </Col>
+  <footer className="mt-auto py-3" style={{ backgroundColor: '#ffffff' }}>
+    <Container fluid className="text-center border-top">
+      <Row className="mt-2">
+        <Col>
+          Created by Levi Kuhaulua, Ivan Ramel, Harrison Law, James Yamada, & Deavyn Etscheit
+        </Col>
+      </Row>
+      <Row xs="auto" className="justify-content-center mt-2">
+        <Col className="d-inline-flex justify-content-center align-items-center gap-2">
+          <BoxArrowUpRight />
+          <a href="https://farringtonap.github.io/farrington-ap.github.io/">
+            Github Page
+          </a>
+        </Col>
+        <Col className="d-inline-flex justify-content-center align-items-center gap-2">
+          <Github />
+          <a href="https://github.com/farringtonap/apcoursemanager">
+            Source Code
+          </a>
+        </Col>
+      </Row>
     </Container>
   </footer>
 );
