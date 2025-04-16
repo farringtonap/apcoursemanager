@@ -56,7 +56,7 @@ model Teacher {
   firstName  String
   lastName   String
   email      String   @unique
-  subjectId  Int      @unique
+  subjectId  Int
 
   // Relations:
   subject    Subject  @relation(fields: [subjectId], references: [id])
@@ -73,17 +73,16 @@ model Teacher {
 /// - name: Name of the subject (e.g., Math, Science).
 /// Relationships:
 /// - One-to-many with APClass (one subject can have multiple AP classes).
-/// - One-to-one with Teacher (each subject is taught by one teacher).
+/// - One-to-many with Teacher (subjects can be taught by different teachers).
 /// - One-to-one with PreRequisite (each subject may have one prerequisite defined).
 ///
 model Subject {
   id           Int           @id @default(autoincrement())
   name         String        @unique
 
-  // Relations:
   apClasses    APClass[]
-  teacher      Teacher?      // inverse relation from Teacher
-  prerequisite PreRequisite? // inverse one-to-one relation with PreRequisite
+  teachers     Teacher[]     // one-to-many: one subject can have many teachers
+  prerequisite PreRequisite?
 
   @@map("subjects")
 }
@@ -121,7 +120,7 @@ model PreRequisite {
 ///
 model GradeLevel {
   id            Int          @id @default(autoincrement())
-  level         Int
+  level         Int          @unique
 
   // Relations:
   apClasses     APClass[]    @relation("APClassGradeLevels")

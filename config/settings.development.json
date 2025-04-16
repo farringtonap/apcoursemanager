@@ -1,13 +1,83 @@
 {
   "defaultAccounts": [
-    { "email": "admin@foo.com", "password": "changeme", "role": "ADMIN" },
-    { "email": "john@foo.com", "password": "changeme" }
+    {
+      "email": "admin@example.com",
+      "role": "ADMIN"
+    },
+    {
+      "email": "user@example.com",
+      "role": "USER"
+    }
   ],
-
-  "defaultData": [
-    { "name": "Basket", "quantity": 3, "owner": "john@foo.com", "condition": "excellent" },
-    { "name": "Bicycle", "quantity": 2, "owner": "john@foo.com", "condition": "poor" },
-    { "name": "Banana", "quantity": 2, "owner": "admin@foo.com", "condition": "good" },
-    { "name": "Boogie Board", "quantity": 2, "owner": "admin@foo.com", "condition": "excellent" }
-  ]
+  "gradeLevels": [9, 10, 11, 12],
+  "subjects": [
+    "Math",
+    "Science",
+    "History",
+    "English",
+    "Art"
+  ],
+  "teachers": [
+  {
+    "firstName": "Alice",
+    "lastName": "Johnson",
+    "email": "alice@example.com",
+    "subject": "Math"
+  }, 
+  {
+    "firstName": "Bob",
+    "lastName": "Carter",
+    "email": "bob@example.com",
+    "subject": "English"
+  },
+  {
+    "firstName": "Janice",
+    "lastName": "Doe",
+    "email": "janice@example.com",
+    "subject": "Math"
+  },
+  {
+    "firstName": "Randle",
+    "lastName": "Smith",
+    "email": "randle@example.com",
+    "subject": "History"
+  }
+],
+"apClasses": [
+  {
+    "name": "Calculus AB",
+    "description": "Intro to calculus concepts",
+    "offered": true,
+    "subject": "Math",
+    "teacherEmail": "alice@example.com",
+    "prerequisites": ["Trigonometry/Precalculus", "Geometry"],
+    "gradeLevels": [11, 12]
+  },
+  {
+    "name": "Language and Composition",
+    "description": "Advanced English composition and analysis",
+    "offered": true,
+    "subject": "English",
+    "teacherEmail": "bob@example.com",
+    "gradeLevels": [11, 12]
+  },
+  {
+    "name": "Precalculus",
+    "description": "Preparation for calculus",
+    "offered": true,
+    "subject": "Math",
+    "teacherEmail": "janice@example.com",
+    "prerequisites": ["Geometry"],
+    "gradeLevels": [10, 11, 12]
+  },
+  {
+    "name": "Human Geography",
+    "description": "Study of human societies and their environments",
+    "offered": true,
+    "subject": "History",
+    "teacherEmail": "randle@example.com",
+    "gradeLevels": [9, 10, 11, 12]
+  }
+]
 }
+  
