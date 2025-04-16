@@ -59,7 +59,7 @@ async function main() {
 
     const gradeLevelConnections = await Promise.all(
       prereq.gradeLevels.map(async (level: number) => {
-        const gl = await prisma.gradeLevel.findFirst({ where: { level } });
+        const gl = await prisma.gradeLevel.findUnique({ where: { level } });
         if (!gl) {
           console.warn(`⚠️  Grade level ${level} not found — skipping.`);
           return null;
