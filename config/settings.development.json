@@ -17,6 +17,22 @@
     "English",
     "Art"
   ],
+  "prerequesites": [
+    {
+      "name": "Trigonometry/Precalculus",
+      "description": "Preparation for calculus",
+      "subject": "Math",
+      "apClasses": ["Calculus AB"],
+      "gradeLevels": [10, 11, 12]
+    },
+    {
+      "name": "Geometry",
+      "description": "Basic geometric concepts",
+      "subject": "Math",
+      "apClasses": ["Calculus AB", "Precalculus"],
+      "gradeLevels": [9, 10, 11, 12]
+    }
+  ],
   "teachers": [
   {
     "firstName": "Alice",
