@@ -74,14 +74,14 @@ model Teacher {
 /// Relationships:
 /// - One-to-many with APClass (one subject can have multiple AP classes).
 /// - One-to-many with Teacher (subjects can be taught by different teachers).
-/// - One-to-one with PreRequisite (each subject may have one prerequisite defined).
+/// - One-to-many with PreRequisite (each subject may have multiple prerequisite defined).
 ///
 model Subject {
   id           Int           @id @default(autoincrement())
   name         String        @unique
 
   apClasses    APClass[]
-  teachers     Teacher[]     // one-to-many: one subject can have many teachers
+  teachers     Teacher[]     
   prerequisite PreRequisite?
 
   @@map("subjects")
