@@ -223,3 +223,19 @@ export async function deletePreRequisite(id: number) {
     where: { id },
   });
 }
+
+export interface CreateStudentProfileDTO {
+  interests: string[];   // we store a JSON array of strings
+}
+
+export async function createStudentProfile(data: CreateStudentProfileDTO) {
+  return prisma.studentProfile.create({
+    data: { interests: data.interests },
+  });
+}
+
+export async function getAllStudentProfiles() {
+  return prisma.studentProfile.findMany({
+    orderBy: { createdAt: "asc" },
+  });
+}
