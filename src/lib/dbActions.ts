@@ -6,7 +6,8 @@ import { prisma } from './prisma';
 
 /**
  * Creates a new user in the database.
- * @param credentials, an object with the following properties: email, password.
+ * @param info, an object with user information: first name,
+ * last name, email, password, and role
  */
 export async function createUser(info: {
   email: string,
