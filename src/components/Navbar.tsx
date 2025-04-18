@@ -32,7 +32,7 @@ const NavBar: React.FC = () => {
               Home
             </Nav.Link>
             <Nav.Link
-              href="/ap-classes"
+              href="/apclasses"
               style={pathName === '/ap-classes' ? activeNavLinkStyle : navLinkStyle}
               active={pathName === '/ap-classes'}
             >
