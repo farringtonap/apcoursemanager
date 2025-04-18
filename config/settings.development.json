@@ -2,11 +2,33 @@
   "defaultAccounts": [
     {
       "email": "admin@example.com",
-      "role": "ADMIN"
+      "role": "ADMIN",
+      "firstName": "Admin",
+      "lastName": ""
     },
     {
-      "email": "user@example.com",
-      "role": "USER"
+      "email": "alice@example.com",
+      "firstName": "Alice",
+      "lastName": "Johnson",
+      "role": "TEACHER"
+    },
+    {
+      "email": "dave@example.com",
+      "firstName": "Dave",
+      "lastName": "Smith",
+      "role": "TEACHER"
+    },
+    {
+      "email": "kahealani@example.com",
+      "firstName": "Kahea",
+      "lastName": "Lani",
+      "role": "TEACHER"
+    },
+    {
+      "email": "rocky@example.com",
+      "firstName": "Rocky",
+      "lastName": "Ohua",
+      "role": "TEACHER"
     }
   ],
   "gradeLevels": [9, 10, 11, 12],
@@ -33,32 +55,6 @@
       "gradeLevels": [9, 10, 11, 12]
     }
   ],
-  "teachers": [
-  {
-    "firstName": "Alice",
-    "lastName": "Johnson",
-    "email": "alice@example.com",
-    "subject": "Math"
-  }, 
-  {
-    "firstName": "Bob",
-    "lastName": "Carter",
-    "email": "bob@example.com",
-    "subject": "English"
-  },
-  {
-    "firstName": "Janice",
-    "lastName": "Doe",
-    "email": "janice@example.com",
-    "subject": "Math"
-  },
-  {
-    "firstName": "Randle",
-    "lastName": "Smith",
-    "email": "randle@example.com",
-    "subject": "History"
-  }
-],
 "apClasses": [
   {
     "name": "Calculus AB",
@@ -74,7 +70,7 @@
     "description": "Advanced English composition and analysis",
     "offered": true,
     "subject": "English",
-    "teacherEmail": "bob@example.com",
+    "teacherEmail": "dave@example.com",
     "gradeLevels": [11, 12]
   },
   {
@@ -82,7 +78,7 @@
     "description": "Preparation for calculus",
     "offered": true,
     "subject": "Math",
-    "teacherEmail": "janice@example.com",
+    "teacherEmail": "kahealani@example.com",
     "prerequisites": ["Geometry"],
     "gradeLevels": [10, 11, 12]
   },
@@ -91,7 +87,7 @@
     "description": "Study of human societies and their environments",
     "offered": true,
     "subject": "History",
-    "teacherEmail": "randle@example.com",
+    "teacherEmail": "rocky@example.com",
     "gradeLevels": [9, 10, 11, 12]
   }
 ]
