@@ -11,12 +11,14 @@ async function main() {
   // Seed users
   const password = await hash('changeme', 10);
   for (const account of config.defaultAccounts) {
-    const role = account.role as Role || Role.USER;
+    const role = account.role as Role || Role.TEACHER;
     console.log(`  Creating user: ${account.email} with role: ${role}`);
     await prisma.user.upsert({
       where: { email: account.email },
       update: {},
       create: {
+        firstName: account.firstName,
+        lastName: account.lastName,
         email: account.email,
         password,
         role,
@@ -83,28 +85,6 @@ async function main() {
     });
   }
 
-  // Seed teachers
-  for (const t of config.teachers) {
-    const subject = await prisma.subject.findUnique({ where: { name: t.subject } });
-    if (!subject) {
-      console.warn(`  Subject "${t.subject}" not found for teacher ${t.email}`);
-      // eslint-disable-next-line no-continue
-      continue;
-    }
-
-    console.log(`  Creating teacher: ${t.email}`);
-    await prisma.teacher.upsert({
-      where: { email: t.email },
-      update: {},
-      create: {
-        firstName: t.firstName,
-        lastName: t.lastName,
-        email: t.email,
-        subjectId: subject.id,
-      },
-    });
-  }
-
   // Seed AP classes
   if (!config.apClasses) {
     console.warn('No AP classes found in the configuration.');
@@ -112,9 +92,8 @@ async function main() {
   }
   for (const c of config.apClasses) {
     const subject = await prisma.subject.findUnique({ where: { name: c.subject } });
-    const teacher = await prisma.teacher.findUnique({ where: { email: c.teacherEmail } });
 
-    if (!subject || !teacher) {
+    if (!subject) {
       console.warn(`  Skipping AP class "${c.name}" - subject or teacher not found`);
       // eslint-disable-next-line no-continue
       continue;
@@ -132,7 +111,7 @@ async function main() {
         description: c.description,
         offered: c.offered,
         subjectId: subject.id,
-        teacherId: teacher.id,
+        teacherEmail: c.teacherEmail,
         gradeLevels: {
           connect: gradeLevels.map(g => ({ id: g.id })),
         },
