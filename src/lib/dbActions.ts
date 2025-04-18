@@ -1,19 +1,27 @@
 'use server';
 
 import { hash } from 'bcrypt';
-import { Teacher, APClass, Subject, PreRequisite } from '@prisma/client';
+import { APClass, Subject, PreRequisite, Role } from '@prisma/client';
 import { prisma } from './prisma';
 
 /**
  * Creates a new user in the database.
  * @param credentials, an object with the following properties: email, password.
  */
-export async function createUser(credentials: { email: string; password: string }) {
-  const password = await hash(credentials.password, 10);
+export async function createUser(info: {
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string,
+  role: string }) {
+  const password = await hash(info.password, 10);
   const newUser = await prisma.user.create({
     data: {
-      email: credentials.email,
+      email: info.email,
       password,
+      firstName: info.firstName,
+      lastName: info.lastName,
+      role: info.role as Role,
     },
   });
   return newUser;
@@ -35,59 +43,6 @@ export async function changePassword(credentials: { email: string; password: str
 }
 
 /**
- * Creates a new teacher in the database.
- * @param teacher, an object with the following properties: firstName, lastName, email, subject.
- */
-export async function createTeacher(teacher: { firstName: string; lastName: string; email: string; subject: string }) {
-  const subject = await prisma.subject.findUnique({
-    where: { name: teacher.subject },
-  });
-
-  if (!subject) {
-    throw new Error(`Subject "${teacher.subject}" not found.`);
-  }
-
-  const newTeacher = await prisma.teacher.create({
-    data: {
-      firstName: teacher.firstName,
-      lastName: teacher.lastName,
-      email: teacher.email,
-      subjectId: subject.id,
-    },
-  });
-
-  return newTeacher;
-}
-
-/**
- * Updates an existing teacher in the database.
- * @param teacher, an object with the following properties: id, firstName, lastName, email, subject.
- */
-export async function updateTeacher(teacher: Teacher) {
-  const updatedTeacher = await prisma.teacher.update({
-    where: { id: teacher.id },
-    data: {
-      firstName: teacher.firstName,
-      lastName: teacher.lastName,
-      email: teacher.email,
-      subjectId: teacher.subjectId,
-    },
-  });
-
-  return updatedTeacher;
-}
-
-/**
- * Deletes an existing teacher from the database.
- * @param id, the id of the teacher to delete.
- */
-export async function deleteTeacher(id: number) {
-  await prisma.teacher.delete({
-    where: { id },
-  });
-}
-
-/**
  * Creates a new AP class in the database.
  * @param apClass, an object with the following properties: name, description, offered, subject,
  * teacherEmail, gradeLevels.
@@ -106,7 +61,7 @@ export async function createAPClass(
     where: { name: apClass.subject },
   });
 
-  const teacher = await prisma.teacher.findUnique({
+  const teacher = await prisma.user.findUnique({
     where: { email: apClass.teacherEmail },
   });
 
@@ -126,7 +81,7 @@ export async function createAPClass(
       description: apClass.description,
       offered: apClass.offered,
       subjectId: subject.id,
-      teacherId: teacher.id,
+      teacherEmail: teacher.email,
       gradeLevels: {
         connect: gradeLevels.map(g => ({ id: g.id })),
       },
@@ -149,7 +104,7 @@ export async function updateAPClass(apClass: APClass & { gradeLevel: { id: numbe
       description: apClass.description,
       offered: apClass.offered,
       subjectId: apClass.subjectId,
-      teacherId: apClass.teacherId,
+      teacherEmail: apClass.teacherEmail,
       gradeLevels: {
         connect: apClass.gradeLevel.map((g: { id: number }) => ({ id: g.id })),
       },
