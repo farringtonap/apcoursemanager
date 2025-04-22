@@ -1,5 +1,5 @@
-title: nextjs-application-template
-description: A template for quickly starting Next.js application development
+title: Farrington High School AP Course Manager
+description: This website manages AP courses for Farrington High School by giving students an easier way of choosing which course they would like to take. Also provides a more visually appealing way of adding, deleting, and editing classes for teachers and coordinators.
 google_analytics:
 show_downloads: true
 theme: jekyll-theme-cayman
