@@ -24,6 +24,7 @@ const AdminPage = async () => {
           href="/"
           variant="success"
           className="p-2 text-white fw-medium d-flex justify-content-center align-items-center gap-2 mb-4"
+          style={{ width: 'fit-content' }}
         >
           <PlusCircle size={20} />
           Add Member
