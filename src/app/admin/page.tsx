@@ -1,19 +1,13 @@
 import { getServerSession } from 'next-auth';
 import
-{ Card,
-  Container,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
+{ Container,
   Button,
   Row,
-  Col,
-  CardFooter,
-  CardText } from 'react-bootstrap';
+  Col } from 'react-bootstrap';
 import { prisma } from '@/lib/prisma';
 import { adminProtectedPage } from '@/lib/page-protection';
 import authOptions from '@/lib/authOptions';
-import { PencilSquare, XSquare } from 'react-bootstrap-icons';
+import { PencilSquare, PlusCircle, XSquare } from 'react-bootstrap-icons';
 
 const AdminPage = async () => {
   const session = await getServerSession(authOptions);
@@ -23,40 +17,52 @@ const AdminPage = async () => {
     } | null,
   );
   const users = await prisma.user.findMany({});
-
   return (
-    <main>
-      <Container id="list" className="py-3 mx-auto">
-        <Row lg={3} className="g-4">
+    <main className="mx-auto">
+      <Container id="list" className="py-3">
+        <Button
+          href="/"
+          variant="success"
+          className="p-2 text-white fw-medium d-flex justify-content-center align-items-center gap-2 mb-4"
+        >
+          <PlusCircle size={20} />
+          Add Member
+        </Button>
+        <Row lg={3} className="g-5">
           {users.map((user) => (
-            <Col sm key={user.email}>
-              <Card>
-                <CardBody>
-                  <CardTitle className="h3 fw-bold">{`${user.firstName} ${user.lastName}`}</CardTitle>
-                  <CardSubtitle className="small text-muted mb-4">{user.email}</CardSubtitle>
-                  <CardText />
-                  <CardFooter className="d-flex flex-row justify-content-start align-items-center ps-0 gap-2">
-                    <Button
-                      variant="outline-primary"
-                      href="/"
-                      size="sm"
-                      className="d-flex justify-content-center align-items-center gap-1 fw-medium"
-                    >
-                      <PencilSquare />
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outline-danger"
-                      href="/"
-                      size="sm"
-                      className="d-flex justify-content-center align-items-center gap-1 fw-medium"
-                    >
-                      <XSquare />
-                      Delete
-                    </Button>
-                  </CardFooter>
-                </CardBody>
-              </Card>
+            <Col sm key={user.email} className="mb-2">
+              <hgroup>
+                <p
+                  className="text-capitalize px-2 bg-danger text-white small rounded-pill"
+                  style={{ width: 'fit-content' }}
+                >
+                  {`${user.role.toLowerCase()}`}
+                </p>
+                <h3 className="h3 text-black fw-bold lh-1">{`${user.firstName} ${user.lastName}`}</h3>
+                <p className="small text-muted">
+                  {`${user.email}`}
+                </p>
+              </hgroup>
+              <div className="d-flex flex-row gap-2">
+                <Button
+                  variant="outline-primary"
+                  href="/"
+                  size="sm"
+                  className="d-flex justify-content-center align-items-center gap-1 fw-medium"
+                >
+                  <PencilSquare />
+                  Edit
+                </Button>
+                <Button
+                  variant="outline-danger"
+                  href="/"
+                  size="sm"
+                  className="d-flex justify-content-center align-items-center gap-1 fw-medium"
+                >
+                  <XSquare />
+                  Delete
+                </Button>
+              </div>
             </Col>
           ))}
         </Row>
