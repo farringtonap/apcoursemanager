@@ -47,7 +47,7 @@ const AdminPage = async () => {
               <div className="d-flex flex-row gap-2">
                 <Button
                   variant="outline-primary"
-                  href="/"
+                  href={`admin/edit-user/${user.id}`}
                   size="sm"
                   className="d-flex justify-content-center align-items-center gap-1 fw-medium"
                 >
