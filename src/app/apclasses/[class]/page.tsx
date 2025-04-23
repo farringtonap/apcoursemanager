@@ -1,8 +1,10 @@
+'use client';
+
 import { useParams } from 'next/navigation';
 
 export default function APClassPage() {
   const params = useParams();
-  const classname = params.classname as string;
+  const classname = params.class as string;
 
   return (
     <div>
