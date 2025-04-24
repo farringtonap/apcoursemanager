@@ -3,8 +3,8 @@ import { BoxArrowUpRight, Github } from 'react-bootstrap-icons';
 
 /** The Footer appears at the bottom of every page. Rendered by the App Layout component. */
 const Footer = () => (
-  <footer className="mt-auto py-3" style={{ backgroundColor: '#ffffff' }}>
-    <Container fluid className="text-center border-top">
+  <footer className="mt-auto py-3" style={{ backgroundColor: '#600a0b' }}>
+    <Container fluid className="text-center text-white">
       <Row className="mt-2">
         <Col>
           Created by Levi Kuhaulua, Ivan Ramel, Harrison Law, James Yamada, & Deavyn Etscheit
