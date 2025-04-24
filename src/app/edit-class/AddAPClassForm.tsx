@@ -34,6 +34,7 @@ const AddAPClassForm: React.FC = () => {
       await createAPClass(parsedData);
       swal('Success', 'AP Class has been added', 'success', { timer: 2000 });
       reset();
+      window.location.reload(); // Reload the page to see the new class
     } catch (err: any) {
       swal('Error', err.message, 'error');
     }
