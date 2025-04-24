@@ -25,7 +25,7 @@ generator client {
 ///
 model APClass {
   id             Int           @id @default(autoincrement())
-  name           String        
+  name           String        @unique
   description    String
   resources      String?
   offered        Boolean

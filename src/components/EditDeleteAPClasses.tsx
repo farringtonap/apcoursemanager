@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Row, Col } from 'react-bootstrap';
 import swal from 'sweetalert';
-import { getAllAPClasses, deleteAPClass, updateAPClass } from '@/lib/dbActions';
+import { getAllAPClasses, deleteAPClass, updateAPClass, getAllSubjects } from '@/lib/dbActions';
 
 interface APClass {
   id: number;
@@ -16,7 +16,14 @@ interface APClass {
     name: string;
   };
   teacherEmail: string;
-  gradeLevels: number[];
+  teacher?: {
+    firstName: string;
+    lastName: string;
+  }
+  gradeLevels: {
+    id: number;
+    level: number;
+  }[];
 }
 
 const EditDeleteAPClasses: React.FC = () => {
@@ -27,11 +34,7 @@ const EditDeleteAPClasses: React.FC = () => {
   const fetchClasses = async () => {
     try {
       const data = await getAllAPClasses();
-      const dataWithGradeLevels = data.map((cls: any) => ({
-        ...cls,
-        gradeLevels: cls.gradeLevels ? cls.gradeLevels.map((g: any) => g.level) : [],
-      }));
-      setClasses(dataWithGradeLevels);
+      setClasses(data);
     } catch (err) {
       console.error('Failed to fetch classes:', err);
     }
@@ -67,6 +70,8 @@ const EditDeleteAPClasses: React.FC = () => {
     setCurrentClass(null);
   };
 
+  const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([]);
+
   const handleEditSubmit = async (e: any) => {
     e.preventDefault();
     if (!currentClass) return;
@@ -100,7 +105,17 @@ const EditDeleteAPClasses: React.FC = () => {
 
   useEffect(() => {
     fetchClasses();
+    fetchSubjects();
   }, []);
+
+  const fetchSubjects = async () => {
+    try {
+      const data = await getAllSubjects();
+      setSubjects(data);
+    } catch (err) {
+      console.error('Failed to fetch subjects:', err);
+    }
+  };
 
   return (
     <div className="mt-5">
@@ -110,7 +125,9 @@ const EditDeleteAPClasses: React.FC = () => {
           <tr>
             <th>Name</th>
             <th>Subject</th>
+            <th>Teacher Name</th>
             <th>Teacher Email</th>
+            <th>Grade Levels</th>
             <th>Offered</th>
             <th>Description</th>
             <th>Actions</th>
@@ -128,7 +145,9 @@ const EditDeleteAPClasses: React.FC = () => {
               <tr key={cls.id}>
                 <td>{cls.name}</td>
                 <td>{cls.subject?.name || 'Unknown'}</td>
+                <td>{cls.teacher?.firstName} {cls.teacher?.lastName}</td>
                 <td>{cls.teacherEmail}</td>
+                <td>{cls.gradeLevels?.[0]?.level ?? 'N/A'}</td>
                 <td>{cls.offered ? 'Offered' : 'Not Offered'}</td>
                 <td>{cls.description}</td>
                 <td>
@@ -194,13 +213,14 @@ const EditDeleteAPClasses: React.FC = () => {
                   </Col>
                   <Col>
                     <Form.Group>
-                      <Form.Label>Subject ID</Form.Label>
-                      <Form.Control
-                        name="subjectId"
-                        type="number"
-                        defaultValue={currentClass.subjectId}
-                        required
-                      />
+                      <Form.Label>Subject</Form.Label>
+                      <Form.Select name="subjectId" defaultValue={currentClass.subjectId}>
+                        {subjects.map((subject) => (
+                          <option key={subject.id} value={subject.id}>
+                            {subject.name}
+                          </option>
+                        ))}
+                      </Form.Select>
                     </Form.Group>
                   </Col>
                 </Row>
