@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-export const AddAPClassSchema = Yup.object().shape({
+const AddAPClassSchema = Yup.object().shape({
   name: Yup.string().required('Class name is required'),
   description: Yup.string().required('Description is required'),
   resources: Yup.string(),
@@ -15,3 +15,5 @@ export const AddAPClassSchema = Yup.object().shape({
     .of(Yup.number().oneOf([9, 10, 11, 12], 'Invalid grade level'))
     .min(1, 'At least one grade level must be selected'),
 });
+
+export default AddAPClassSchema;

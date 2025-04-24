@@ -74,7 +74,7 @@ const EditDeleteAPClasses: React.FC = () => {
     try {
       const formData = new FormData(e.target);
       const gradeLevelIds = Array.from(formData.getAll('gradeLevels')).map((level) => ({
-        id: parseInt(level as string),
+        id: parseInt(level as string, 10),
       }));
 
       const updated = {
@@ -83,7 +83,7 @@ const EditDeleteAPClasses: React.FC = () => {
         description: formData.get('description') as string,
         resources: currentClass.resources ?? null,
         offered: formData.get('offered') === 'true',
-        subjectId: parseInt(formData.get('subjectId') as string),
+        subjectId: parseInt(formData.get('subjectId') as string, 10),
         teacherEmail: formData.get('teacherEmail') as string,
         gradeLevel: gradeLevelIds,
       };
@@ -132,10 +132,19 @@ const EditDeleteAPClasses: React.FC = () => {
                 <td>{cls.offered ? 'Offered' : 'Not Offered'}</td>
                 <td>{cls.description}</td>
                 <td>
-                  <Button variant="secondary" size="sm" onClick={() => handleEdit(cls)} className="me-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => handleEdit(cls)}
+                    className="me-2"
+                  >
                     Edit
                   </Button>
-                  <Button variant="danger" size="sm" onClick={() => handleDelete(cls.id, cls.name)}>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => handleDelete(cls.id, cls.name)}
+                  >
                     Delete
                   </Button>
                 </td>
@@ -175,7 +184,12 @@ const EditDeleteAPClasses: React.FC = () => {
                   <Col>
                     <Form.Group>
                       <Form.Label>Teacher Email</Form.Label>
-                      <Form.Control name="teacherEmail" type="email" defaultValue={currentClass.teacherEmail} required />
+                      <Form.Control
+                        name="teacherEmail"
+                        type="email"
+                        defaultValue={currentClass.teacherEmail}
+                        required
+                      />
                     </Form.Group>
                   </Col>
                   <Col>
@@ -192,7 +206,12 @@ const EditDeleteAPClasses: React.FC = () => {
                 </Row>
                 <Form.Group>
                   <Form.Label>Description</Form.Label>
-                  <Form.Control as="textarea" name="description" defaultValue={currentClass.description} required />
+                  <Form.Control
+                    as="textarea"
+                    name="description"
+                    defaultValue={currentClass.description}
+                    required
+                  />
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Grade Levels</Form.Label>

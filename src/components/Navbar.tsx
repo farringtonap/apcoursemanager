@@ -28,7 +28,11 @@ const NavBar: React.FC = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto" style={navStyle}>
-            <Nav.Link href="/" style={pathName === '/' ? activeNavLinkStyle : navLinkStyle} active={pathName === '/'}>
+            <Nav.Link
+              href="/"
+              style={pathName === '/' ? activeNavLinkStyle : navLinkStyle}
+              active={pathName === '/'}
+            >
               Home
             </Nav.Link>
             <Nav.Link
@@ -54,7 +58,13 @@ const NavBar: React.FC = () => {
             </Nav.Link>
             {currentUser
               ? [
-                  <Nav.Link id="add-stuff-nav" href="/add" key="add" active={pathName === '/add'} style={navLinkStyle}>
+                  <Nav.Link
+                    id="add-stuff-nav"
+                    href="/add"
+                    key="add"
+                    active={pathName === '/add'}
+                    style={navLinkStyle}
+                  >
                     Add Stuff
                   </Nav.Link>,
                   <Nav.Link
@@ -83,8 +93,8 @@ const NavBar: React.FC = () => {
                   id="edit-courses-nav"
                   href="/edit-class"
                   key="edit-courses"
-                  style={pathName === '/edit-class' ? activeNavLinkStyle : navLinkStyle}
                   active={pathName === '/edit-class'}
+                  style={pathName === '/edit-class' ? activeNavLinkStyle : navLinkStyle}
                 >
                   Add/Edit Courses
                 </Nav.Link>
@@ -93,7 +103,15 @@ const NavBar: React.FC = () => {
           </Nav>
           <Nav style={rightNavStyle}>
             {session ? (
-              <NavDropdown id="login-dropdown" title={<span style={dropdownStyle}>{currentUser}</span>} menuVariant="dark">
+              <NavDropdown
+                id="login-dropdown"
+                title={(
+                  <span style={dropdownStyle}>
+                    {currentUser}
+                  </span>
+                )}
+                menuVariant="dark"
+              >
                 <NavDropdown.Item id="login-dropdown-sign-out" href="/api/auth/signout">
                   <BoxArrowRight />
                   Sign Out
@@ -104,7 +122,16 @@ const NavBar: React.FC = () => {
                 </NavDropdown.Item>
               </NavDropdown>
             ) : (
-              <NavDropdown id="login-dropdown" title={<span style={dropdownStyle}>Login</span>} menuVariant="dark" style={containerStyle}>
+              <NavDropdown
+                id="login-dropdown"
+                title={(
+                  <span style={dropdownStyle}>
+                    Login
+                  </span>
+                )}
+                menuVariant="dark"
+                style={containerStyle}
+              >
                 <NavDropdown.Item id="login-dropdown-sign-in" href="/auth/signin">
                   <PersonFill />
                   Sign in

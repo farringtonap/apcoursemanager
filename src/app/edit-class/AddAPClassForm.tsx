@@ -8,11 +8,11 @@ import swal from 'sweetalert';
 import { redirect } from 'next/navigation';
 import { createAPClass } from '@/lib/dbActions';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { AddAPClassSchema } from '@/lib/validationSchemas';
+import AddAPClassSchema from '@/lib/validationSchemas';
 
 const AddAPClassForm: React.FC = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: session, status } = useSession();
-  const currentUser = session?.user?.email || '';
 
   const {
     register,
@@ -27,7 +27,7 @@ const AddAPClassForm: React.FC = () => {
     const parsedData = {
       ...data,
       offered: data.offered === 'true',
-      gradeLevels: data.gradeLevels.map((level: string) => parseInt(level)),
+      gradeLevels: data.gradeLevels.map((level: string) => parseInt(level, 10)),
     };
 
     try {
