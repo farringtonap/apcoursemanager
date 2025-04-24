@@ -6,7 +6,6 @@ const AddAPClassSchema = Yup.object().shape({
   resources: Yup.string(),
   offered: Yup.string().required('Offered status is required'),
   teacherEmail: Yup.string().email('Invalid email').required('Teacher email is required'),
-  teacherName: Yup.string().required('Teacher name is required'),
   subjectType: Yup.string()
     .oneOf(['Math', 'Science', 'History', 'English', 'Art'], 'Invalid subject type')
     .required('Subject type is required'),
