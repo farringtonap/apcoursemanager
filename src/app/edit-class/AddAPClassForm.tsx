@@ -89,17 +89,6 @@ const AddAPClassForm: React.FC = () => {
                       <div className="invalid-feedback">{errors.teacherEmail?.message}</div>
                     </Form.Group>
                   </Col>
-                  <Col>
-                    <Form.Group>
-                      <Form.Label>Teacher Name</Form.Label>
-                      <input
-                        type="text"
-                        {...register('teacherName')}
-                        className={`form-control ${errors.teacherName ? 'is-invalid' : ''}`}
-                      />
-                      <div className="invalid-feedback">{errors.teacherName?.message}</div>
-                    </Form.Group>
-                  </Col>
                 </Row>
 
                 <Form.Group>
