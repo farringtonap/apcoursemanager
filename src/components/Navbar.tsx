@@ -25,7 +25,7 @@ const NavBar: React.FC = () => {
   return (
     <div style={{ backgroundColor: '#600a0b' }}>
   <div style={{ display: 'flex', justifyContent: 'center', padding: '0px 0' }}>
-      <Image src="./FHS_Logo.png" alt="Brand Logo" style={{ height: '80px' }} />
+      <Image src="/FHS_Logo.png" alt="Brand Logo" style={{ height: '80px' }} />
   </div>
     <Navbar style={navbarStyle} variant="dark" expand="lg">
       <Container style={containerStyle} fluid>
