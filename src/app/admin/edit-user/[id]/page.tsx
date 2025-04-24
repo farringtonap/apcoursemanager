@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth';
 import authOptions from '@/lib/authOptions';
 import { adminProtectedPage } from '@/lib/page-protection';
+import EditUserForm from '@/components/EditUserForm';
 
 const EditUser = async ({ params } : { params: { id: string } }) => {
   // Redirects user to appropriate link if not an admin or not signed in
