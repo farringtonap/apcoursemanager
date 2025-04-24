@@ -267,3 +267,20 @@ export async function deletePreRequisite(id: number) {
     where: { id },
   });
 }
+
+/**
+ * Retrieves all prerequisites from the database, including subject and grade level info.
+ */
+export async function getAllPreRequisites() {
+  const prerequisites = await prisma.preRequisite.findMany({
+    include: {
+      subject: true,
+      gradeLevels: true,
+    },
+    orderBy: {
+      name: 'asc',
+    },
+  });
+
+  return prerequisites;
+}

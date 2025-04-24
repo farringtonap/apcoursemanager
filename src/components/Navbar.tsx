@@ -95,12 +95,21 @@ const NavBar: React.FC = () => {
                 </Nav.Link>
                 <Nav.Link
                   id="edit-courses-nav"
-                  href="/edit-class"
+                  href="/CRUD-Classes"
                   key="edit-courses"
-                  active={pathName === '/edit-class'}
-                  style={pathName === '/edit-class' ? activeNavLinkStyle : navLinkStyle}
+                  active={pathName === '/CRUD-Classes'}
+                  style={pathName === '/CRUD-Classes' ? activeNavLinkStyle : navLinkStyle}
                 >
                   Add/Edit Courses
+                </Nav.Link>
+                <Nav.Link 
+                id="edit-prerequisites-nav"
+                href="/CRUD-PreReqs"
+                key="edit-prerequisites"
+                active={pathName === '/CRUD-PreReqs'}
+                style={pathName === '/CRUD-PreReqs' ? activeNavLinkStyle : navLinkStyle}
+                >
+                  Add/Edit PreRequisites
                 </Nav.Link>
               </>
             )}
