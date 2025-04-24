@@ -13,13 +13,13 @@ const Footer = () => (
       <Row xs="auto" className="justify-content-center mt-2">
         <Col className="d-inline-flex justify-content-center align-items-center gap-2">
           <BoxArrowUpRight />
-          <a href="https://farringtonap.github.io/farrington-ap.github.io/">
+          <a href="https://farringtonap.github.io/farrington-ap.github.io/" className="text-white">
             Github Page
           </a>
         </Col>
         <Col className="d-inline-flex justify-content-center align-items-center gap-2">
           <Github />
-          <a href="https://github.com/farringtonap/apcoursemanager">
+          <a href="https://github.com/farringtonap/apcoursemanager" className="text-white">
             Source Code
           </a>
         </Col>

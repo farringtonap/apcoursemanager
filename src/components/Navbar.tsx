@@ -17,7 +17,7 @@ const NavBar: React.FC = () => {
   const navLinkStyle = { color: 'white' };
   const navbarStyle = { backgroundColor: '#600a0b' };
   const containerStyle = { marginLeft: '0', paddingLeft: '0px' };
-  const activeNavLinkStyle = { color: '#aaaaaa', textDecoration: 'underline' };
+  const activeNavLinkStyle = { fontWeight: 'bold' };
   const navStyle = { marginLeft: '20px' };
   const dropdownStyle = { color: 'white' };
   const rightNavStyle = { marginLeft: 'auto', marginRight: '20px' };
@@ -27,7 +27,7 @@ const NavBar: React.FC = () => {
   <div style={{ display: 'flex', justifyContent: 'center', padding: '0px 0' }}>
       <Image src="./FHS_Logo.png" alt="Brand Logo" style={{ height: '80px' }} />
   </div>
-    <Navbar style={navbarStyle} variant="light" expand="lg">
+    <Navbar style={navbarStyle} variant="dark" expand="lg">
       <Container style={containerStyle} fluid>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
