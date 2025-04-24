@@ -52,13 +52,13 @@ export async function createAPClass(
     name: string;
     description: string;
     offered: boolean;
-    subject: string;
+    subjectType: string;
     teacherEmail: string;
     gradeLevels: number[]
   },
 ) {
   const subject = await prisma.subject.findUnique({
-    where: { name: apClass.subject },
+    where: { name: apClass.subjectType },
   });
 
   const teacher = await prisma.user.findUnique({
@@ -122,6 +122,22 @@ export async function deleteAPClass(id: number) {
   await prisma.aPClass.delete({
     where: { id },
   });
+}
+
+/**
+ * Retrieves all AP classes from the database, including subject info.
+ */
+export async function getAllAPClasses() {
+  const classes = await prisma.aPClass.findMany({
+    include: {
+      subject: true, // assumes there's a Subject relation via subjectId
+    },
+    orderBy: {
+      name: 'asc',
+    },
+  });
+
+  return classes;
 }
 
 /**

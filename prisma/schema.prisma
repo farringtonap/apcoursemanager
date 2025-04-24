@@ -30,7 +30,7 @@ model APClass {
   resources      String?
   offered        Boolean
   subjectId      Int
-  teacherEmail   String  @unique
+  teacherEmail   String
 
   // Relations:
   subject        Subject       @relation(fields: [subjectId], references: [id])
@@ -120,6 +120,6 @@ model User {
   lastName String
   role     Role   @default(TEACHER)
   
-  apClass  APClass?
+  apClass  APClass[]
 
 }

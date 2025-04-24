@@ -57,7 +57,6 @@ const NavBar: React.FC = () => {
                   <Nav.Link id="add-stuff-nav" href="/add" key="add" active={pathName === '/add'} style={navLinkStyle}>
                     Add Stuff
                   </Nav.Link>,
-                  // eslint-disable-next-line max-len
                   <Nav.Link
                     id="list-stuff-nav"
                     href="/list"
@@ -69,24 +68,31 @@ const NavBar: React.FC = () => {
                   </Nav.Link>,
                 ]
               : ''}
-            {currentUser && role === 'ADMIN' ? (
-              // eslint-disable-next-line max-len
-              <Nav.Link
-                id="admin-stuff-nav"
-                href="/admin"
-                key="admin"
-                active={pathName === '/admin'}
-                style={navLinkStyle}
-              >
-                Admin
-              </Nav.Link>
-            ) : (
-              ''
+            {currentUser && role === 'ADMIN' && (
+              <>
+                <Nav.Link
+                  id="admin-stuff-nav"
+                  href="/admin"
+                  key="admin"
+                  active={pathName === '/admin'}
+                  style={pathName === '/admin' ? activeNavLinkStyle : navLinkStyle}
+                >
+                  Admin
+                </Nav.Link>
+                <Nav.Link
+                  id="edit-courses-nav"
+                  href="/edit-class"
+                  key="edit-courses"
+                  style={pathName === '/edit-class' ? activeNavLinkStyle : navLinkStyle}
+                  active={pathName === '/edit-class'}
+                >
+                  Add/Edit Courses
+                </Nav.Link>
+              </>
             )}
           </Nav>
           <Nav style={rightNavStyle}>
             {session ? (
-              // eslint-disable-next-line max-len
               <NavDropdown id="login-dropdown" title={<span style={dropdownStyle}>{currentUser}</span>} menuVariant="dark">
                 <NavDropdown.Item id="login-dropdown-sign-out" href="/api/auth/signout">
                   <BoxArrowRight />
@@ -98,7 +104,6 @@ const NavBar: React.FC = () => {
                 </NavDropdown.Item>
               </NavDropdown>
             ) : (
-              // eslint-disable-next-line max-len
               <NavDropdown id="login-dropdown" title={<span style={dropdownStyle}>Login</span>} menuVariant="dark" style={containerStyle}>
                 <NavDropdown.Item id="login-dropdown-sign-in" href="/auth/signin">
                   <PersonFill />
