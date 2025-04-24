@@ -4,7 +4,7 @@
 
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { Container, Nav, Navbar, NavDropdown, Image } from 'react-bootstrap';
 import { BoxArrowRight, Lock, PersonFill, PersonPlusFill } from 'react-bootstrap-icons';
 
 const NavBar: React.FC = () => {
@@ -14,16 +14,20 @@ const NavBar: React.FC = () => {
   const role = userWithRole?.randomKey;
   const pathName = usePathname();
 
-  const navLinkStyle = { color: 'black' };
-  const navbarStyle = { backgroundColor: '#ffffff' };
+  const navLinkStyle = { color: 'white' };
+  const navbarStyle = { backgroundColor: '#600a0b' };
   const containerStyle = { marginLeft: '0', paddingLeft: '0px' };
-  const activeNavLinkStyle = { color: '#808080' };
+  const activeNavLinkStyle = { fontWeight: 'bold' };
   const navStyle = { marginLeft: '20px' };
-  const dropdownStyle = { color: 'black' };
+  const dropdownStyle = { color: 'white' };
   const rightNavStyle = { marginLeft: 'auto', marginRight: '20px' };
 
   return (
-    <Navbar style={navbarStyle} variant="light" expand="lg">
+    <div style={{ backgroundColor: '#600a0b' }}>
+  <div style={{ display: 'flex', justifyContent: 'center', padding: '0px 0' }}>
+      <Image src="./FHS_Logo.png" alt="Brand Logo" style={{ height: '80px' }} />
+  </div>
+    <Navbar style={navbarStyle} variant="dark" expand="lg">
       <Container style={containerStyle} fluid>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -33,8 +37,8 @@ const NavBar: React.FC = () => {
             </Nav.Link>
             <Nav.Link
               href="/apclasses"
-              style={pathName === '/ap-classes' ? activeNavLinkStyle : navLinkStyle}
-              active={pathName === '/ap-classes'}
+              style={pathName === '/apclasses' ? activeNavLinkStyle : navLinkStyle}
+              active={pathName === '/apclasses'}
             >
               AP Classes
             </Nav.Link>
@@ -99,7 +103,7 @@ const NavBar: React.FC = () => {
               </NavDropdown>
             ) : (
               // eslint-disable-next-line max-len
-              <NavDropdown id="login-dropdown" title={<span style={dropdownStyle}>Login</span>} menuVariant="dark" style={containerStyle}>
+              <NavDropdown id="login-dropdown" title={<span style={dropdownStyle}>Login</span>} menuVariant="dark" style={containerStyle} className="login-arrow-white">
                 <NavDropdown.Item id="login-dropdown-sign-in" href="/auth/signin">
                   <PersonFill />
                   Sign in
@@ -114,6 +118,7 @@ const NavBar: React.FC = () => {
         </Navbar.Collapse>
       </Container>
     </Navbar>
+    </div>
   );
 };
 

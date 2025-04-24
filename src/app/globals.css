@@ -12,3 +12,8 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.login-arrow-white .dropdown-toggle::after {
+  border-top-color: white !important;
+}
+
