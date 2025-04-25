@@ -5,13 +5,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { PrismaClient } from '@/lib/prisma';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export default async function APClassesPage() {
   const classes = await prisma.aPClass.findMany({
     select: {
+      id: true,
       name: true,
       description: true,
       offered: true,
@@ -54,7 +53,7 @@ function ClientSideAPClassList({ classes }: { classes: any[] }) {
         {filtered.map((cls) => (
           <Link
             key={cls.name}
-            href={cls.offered ? `/apclasses/${cls.name}` : '#'}
+            href={cls.offered ? `/apclasses/${cls.id}` : '#'}
             style={{
               pointerEvents: cls.offered ? 'auto' : 'none',
               textDecoration: 'none',

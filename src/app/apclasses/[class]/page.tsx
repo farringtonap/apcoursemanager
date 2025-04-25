@@ -1,18 +1,16 @@
 import { notFound } from 'next/navigation';
-import { PrismaClient } from '@/lib/prisma';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 type Props = {
   params: {
-    name: string;
+    class: string;
   };
 };
 
 export default async function APClassDetailPage({ params }: Props) {
-  const classItem = await prisma.aPClass.findFirst({
+  const classItem = await prisma.aPClass.findUnique({
     where: {
-      name: params.name,
+      id: Number(params.class),
     },
     select: {
       name: true,
