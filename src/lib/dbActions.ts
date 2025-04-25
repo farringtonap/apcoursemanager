@@ -1,7 +1,7 @@
 'use server';
 
 import { hash } from 'bcrypt';
-import { APClass, Subject, PreRequisite, Role } from '@prisma/client';
+import { Subject, PreRequisite, Role } from '@prisma/client';
 import { prisma } from './prisma';
 
 /**
@@ -55,6 +55,7 @@ export async function createAPClass(
     subjectType: string;
     teacherEmail: string;
     gradeLevels: number[]
+    preRequisiteIds: number[];
   },
 ) {
   // 1. Check if a class with the same name already exists
@@ -86,6 +87,13 @@ export async function createAPClass(
     },
   });
 
+  // 4. Resolve prerequisite IDs
+  const preRequisites = await prisma.preRequisite.findMany({
+    where: {
+      id: { in: apClass.preRequisiteIds },
+    },
+  });
+
   // 4. Create new AP class
   const newAPClass = await prisma.aPClass.create({
     data: {
@@ -97,19 +105,29 @@ export async function createAPClass(
       gradeLevels: {
         connect: gradeLevels.map(g => ({ id: g.id })),
       },
+      prerequisites: {
+        connect: preRequisites.map(p => ({ id: p.id })),
+      },
     },
   });
-
   return newAPClass;
 }
-
 
 /**
  * Updates an existing AP class in the database.
  * @param apClass, an object with the following properties: id, name, description, offered, subject,
  * teacherEmail, gradeLevels.
  */
-export async function updateAPClass(apClass: APClass & { gradeLevel: { id: number }[] }) {
+export async function updateAPClass(apClass: {
+  id: number;
+  name: string;
+  description: string;
+  offered: boolean;
+  subjectId: number;
+  teacherEmail: string;
+  gradeLevel: { id: number }[];
+  preRequisiteIds: number[];
+}) {
   const updatedAPClass = await prisma.aPClass.update({
     where: { id: apClass.id },
     data: {
@@ -119,7 +137,10 @@ export async function updateAPClass(apClass: APClass & { gradeLevel: { id: numbe
       subjectId: apClass.subjectId,
       teacherEmail: apClass.teacherEmail,
       gradeLevels: {
-        connect: apClass.gradeLevel.map((g: { id: number }) => ({ id: g.id })),
+        set: apClass.gradeLevel.map((g) => ({ id: g.id })),
+      },
+      prerequisites: {
+        set: apClass.preRequisiteIds.map((id) => ({ id })),
       },
     },
   });
@@ -145,7 +166,8 @@ export async function getAllAPClasses() {
     include: {
       subject: true,
       teacher: true,
-      gradeLevels: true, // assumes there's a Subject relation via subjectId
+      gradeLevels: true,
+      prerequisites: true, // assumes there's a Subject relation via subjectId
     },
     orderBy: {
       name: 'asc',

@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint-disable jsx-a11y/label-has-associated-control */
+
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { createPreRequisite, getAllSubjects } from '@/lib/dbActions';
@@ -24,12 +26,12 @@ export default function AddPreRequisites() {
       await createPreRequisite({
         name: data.name,
         subject: data.subject,
-        gradeLevels: [], // Placeholder - may be used later
+        gradeLevels: [],
       });
       setSuccess('Prerequisite added successfully.');
       setError('');
       reset();
-      window.location.reload(); // Reload the page to see the new prerequisite
+      window.location.reload();
     } catch (err: any) {
       setError(err.message || 'Something went wrong.');
       setSuccess('');
@@ -41,16 +43,22 @@ export default function AddPreRequisites() {
       <h4>Add New Prerequisite</h4>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">
-          <label className="form-label">Prerequisite Name</label>
+          <label htmlFor="prerequisiteName" className="form-label">Prerequisite Name</label>
           <input
-            type="text"
-            className="form-control"
+            id="prerequisiteName"
             {...register('name', { required: true })}
+            className="form-control"
+            type="text"
           />
         </div>
+
         <div className="mb-3">
-          <label className="form-label">Subject</label>
-          <select className="form-select" {...register('subject', { required: true })}>
+          <label htmlFor="subjectSelect" className="form-label">Subject</label>
+          <select
+            id="subjectSelect"
+            {...register('subject', { required: true })}
+            className="form-select"
+          >
             <option value="">-- Select a Subject --</option>
             {subjects.map((subject) => (
               <option key={subject.id} value={subject.name}>
@@ -59,6 +67,7 @@ export default function AddPreRequisites() {
             ))}
           </select>
         </div>
+
         <button type="submit" className="btn btn-primary">Add Prerequisite</button>
 
         {error && <div className="text-danger mt-2">{error}</div>}

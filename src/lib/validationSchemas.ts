@@ -13,6 +13,7 @@ const AddAPClassSchema = Yup.object().shape({
   gradeLevels: Yup.array()
     .of(Yup.number().oneOf([9, 10, 11, 12], 'Invalid grade level'))
     .min(1, 'At least one grade level must be selected'),
+  preRequisiteIds: Yup.array().of(Yup.number()).optional(),
 });
 
 export default AddAPClassSchema;

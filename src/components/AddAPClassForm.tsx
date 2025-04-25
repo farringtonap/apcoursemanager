@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint-disable react/prop-types */
+
 import { useSession } from 'next-auth/react';
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
@@ -9,15 +11,20 @@ import { redirect } from 'next/navigation';
 import { createAPClass } from '@/lib/dbActions';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import AddAPClassSchema from '@/lib/validationSchemas';
+import Select from 'react-select';
 
-const AddAPClassForm: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data: session, status } = useSession();
+interface AddAPClassFormProps {
+  preRequisites: { id: number; name: string }[];
+}
+
+const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
+  const { status } = useSession();
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue, // ✅ Step 3 - Import setValue
     formState: { errors },
   } = useForm({
     resolver: yupResolver(AddAPClassSchema),
@@ -27,14 +34,15 @@ const AddAPClassForm: React.FC = () => {
     const parsedData = {
       ...data,
       offered: data.offered === 'true',
-      gradeLevels: data.gradeLevels.map((level: string) => parseInt(level, 10)),
+      gradeLevels: [].concat(data.gradeLevels || []).map((level: string) => parseInt(level, 10)),
+      preRequisiteIds: data.preRequisiteIds || [], // ✅ Step 4 - Keep this
     };
 
     try {
       await createAPClass(parsedData);
       swal('Success', 'AP Class has been added', 'success', { timer: 2000 });
       reset();
-      window.location.reload(); // Reload the page to see the new class
+      window.location.reload();
     } catch (err: any) {
       swal('Error', err.message, 'error');
     }
@@ -114,16 +122,20 @@ const AddAPClassForm: React.FC = () => {
                   <div className="invalid-feedback">{errors.description?.message}</div>
                 </Form.Group>
 
-                {/* Optional Fields (uncomment when implemented) */}
-                {/* <Form.Group>
-                  <Form.Label>Resources</Form.Label>
-                  <textarea {...register('resources')} className="form-control" />
-                </Form.Group>
-
+                {/* ✅ Step 2 - Replace <select multiple> with react-select */}
                 <Form.Group>
-                  <Form.Label>Prerequisites</Form.Label>
-                  <textarea {...register('prerequisites')} className="form-control" />
-                </Form.Group> */}
+                  <Form.Label>Pre-Requisites</Form.Label>
+                  <Select
+                    isMulti
+                    options={preRequisites.map((pr) => ({ value: pr.id, label: pr.name }))}
+                    onChange={(selectedOptions) => {
+                      const ids = selectedOptions.map((option) => option.value);
+                      setValue('preRequisiteIds', ids);
+                    }}
+                    className={errors.preRequisiteIds ? 'is-invalid' : ''}
+                  />
+                  <div className="invalid-feedback d-block">{errors.preRequisiteIds?.message}</div>
+                </Form.Group>
 
                 <Form.Group>
                   <Form.Label>Grade Levels</Form.Label>

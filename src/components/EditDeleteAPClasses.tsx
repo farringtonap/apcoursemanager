@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Row, Col } from 'react-bootstrap';
+import Select from 'react-select';
 import swal from 'sweetalert';
-import { getAllAPClasses, deleteAPClass, updateAPClass, getAllSubjects } from '@/lib/dbActions';
+import {
+  getAllAPClasses,
+  deleteAPClass,
+  updateAPClass,
+  getAllSubjects,
+  getAllPreRequisites,
+} from '@/lib/dbActions';
 
 interface APClass {
   id: number;
@@ -12,24 +19,21 @@ interface APClass {
   resources: string | null;
   offered: boolean;
   subjectId: number;
-  subject: {
-    name: string;
-  };
+  subject: { name: string };
   teacherEmail: string;
-  teacher?: {
-    firstName: string;
-    lastName: string;
-  }
-  gradeLevels: {
-    id: number;
-    level: number;
-  }[];
+  teacher?: { firstName: string; lastName: string };
+  gradeLevels: { id: number; level: number }[];
+  prerequisites: { id: number; name: string }[];
 }
 
 const EditDeleteAPClasses: React.FC = () => {
   const [classes, setClasses] = useState<APClass[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [currentClass, setCurrentClass] = useState<APClass | null>(null);
+
+  const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([]);
+  const [allPreRequisites, setAllPreRequisites] = useState<{ id: number; name: string }[]>([]);
+  const [selectedPreRequisites, setSelectedPreRequisites] = useState<{ value: number; label: string }[]>([]);
 
   const fetchClasses = async () => {
     try {
@@ -38,6 +42,51 @@ const EditDeleteAPClasses: React.FC = () => {
     } catch (err) {
       console.error('Failed to fetch classes:', err);
     }
+  };
+
+  const fetchSubjects = async () => {
+    try {
+      const data = await getAllSubjects();
+      setSubjects(data);
+    } catch (err) {
+      console.error('Failed to fetch subjects:', err);
+    }
+  };
+
+  const fetchPreRequisites = async () => {
+    try {
+      const data = await getAllPreRequisites();
+      setAllPreRequisites(data);
+    } catch (err) {
+      console.error('Failed to fetch prerequisites:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchClasses();
+    fetchSubjects();
+    fetchPreRequisites();
+  }, []);
+
+  useEffect(() => {
+    if (currentClass) {
+      setSelectedPreRequisites(
+        currentClass.prerequisites.map((pr) => ({
+          value: pr.id,
+          label: pr.name,
+        })),
+      );
+    }
+  }, [currentClass]);
+
+  const handleEdit = (cls: APClass) => {
+    setCurrentClass(cls);
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setCurrentClass(null);
   };
 
   const handleDelete = async (id: number, className: string) => {
@@ -60,18 +109,6 @@ const EditDeleteAPClasses: React.FC = () => {
     }
   };
 
-  const handleEdit = (cls: APClass) => {
-    setCurrentClass(cls);
-    setShowModal(true);
-  };
-
-  const handleModalClose = () => {
-    setShowModal(false);
-    setCurrentClass(null);
-  };
-
-  const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([]);
-
   const handleEditSubmit = async (e: any) => {
     e.preventDefault();
     if (!currentClass) return;
@@ -91,6 +128,7 @@ const EditDeleteAPClasses: React.FC = () => {
         subjectId: parseInt(formData.get('subjectId') as string, 10),
         teacherEmail: formData.get('teacherEmail') as string,
         gradeLevel: gradeLevelIds,
+        preRequisiteIds: selectedPreRequisites.map((pr) => pr.value),
       };
 
       await updateAPClass(updated);
@@ -100,20 +138,6 @@ const EditDeleteAPClasses: React.FC = () => {
     } catch (err) {
       console.error(err);
       swal('Error', 'Failed to update class.', 'error');
-    }
-  };
-
-  useEffect(() => {
-    fetchClasses();
-    fetchSubjects();
-  }, []);
-
-  const fetchSubjects = async () => {
-    try {
-      const data = await getAllSubjects();
-      setSubjects(data);
-    } catch (err) {
-      console.error('Failed to fetch subjects:', err);
     }
   };
 
@@ -129,6 +153,7 @@ const EditDeleteAPClasses: React.FC = () => {
             <th>Teacher Email</th>
             <th>Grade Levels</th>
             <th>Offered</th>
+            <th>Pre-Requisites</th>
             <th>Description</th>
             <th>Actions</th>
           </tr>
@@ -136,7 +161,7 @@ const EditDeleteAPClasses: React.FC = () => {
         <tbody>
           {classes.length === 0 ? (
             <tr>
-              <td colSpan={6} className="text-center">
+              <td colSpan={9} className="text-center">
                 No classes found.
               </td>
             </tr>
@@ -145,25 +170,24 @@ const EditDeleteAPClasses: React.FC = () => {
               <tr key={cls.id}>
                 <td>{cls.name}</td>
                 <td>{cls.subject?.name || 'Unknown'}</td>
-                <td>{cls.teacher?.firstName} {cls.teacher?.lastName}</td>
+                <td>
+                  {cls.teacher?.firstName}
+                  {cls.teacher?.lastName}
+                </td>
                 <td>{cls.teacherEmail}</td>
-                <td>{cls.gradeLevels?.[0]?.level ?? 'N/A'}</td>
+                <td>{cls.gradeLevels?.map((g) => g.level).join(', ') || 'N/A'}</td>
                 <td>{cls.offered ? 'Offered' : 'Not Offered'}</td>
+                <td style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                  {cls.prerequisites?.length
+                    ? cls.prerequisites.map((pr) => pr.name).join(', ')
+                    : 'None'}
+                </td>
                 <td>{cls.description}</td>
                 <td>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => handleEdit(cls)}
-                    className="me-2"
-                  >
+                  <Button variant="secondary" size="sm" onClick={() => handleEdit(cls)} className="me-2">
                     Edit
                   </Button>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => handleDelete(cls.id, cls.name)}
-                  >
+                  <Button variant="danger" size="sm" onClick={() => handleDelete(cls.id, cls.name)}>
                     Delete
                   </Button>
                 </td>
@@ -235,12 +259,25 @@ const EditDeleteAPClasses: React.FC = () => {
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Grade Levels</Form.Label>
-                  <Form.Select name="gradeLevels" multiple defaultValue={currentClass.gradeLevels.map(String)}>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
+                  <Form.Select
+                    name="gradeLevels"
+                    multiple
+                    defaultValue={currentClass.gradeLevels.map((g) => g.id.toString())}
+                  >
+                    <option value="1">9</option>
+                    <option value="2">10</option>
+                    <option value="3">11</option>
+                    <option value="4">12</option>
                   </Form.Select>
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Pre-Requisites</Form.Label>
+                  <Select
+                    isMulti
+                    options={allPreRequisites.map((pr) => ({ value: pr.id, label: pr.name }))}
+                    value={selectedPreRequisites}
+                    onChange={(options) => setSelectedPreRequisites(options as any)}
+                  />
                 </Form.Group>
               </>
             )}

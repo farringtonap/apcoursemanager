@@ -102,12 +102,12 @@ const NavBar: React.FC = () => {
                 >
                   Add/Edit Courses
                 </Nav.Link>
-                <Nav.Link 
-                id="edit-prerequisites-nav"
-                href="/CRUD-PreReqs"
-                key="edit-prerequisites"
-                active={pathName === '/CRUD-PreReqs'}
-                style={pathName === '/CRUD-PreReqs' ? activeNavLinkStyle : navLinkStyle}
+                <Nav.Link
+                  id="edit-prerequisites-nav"
+                  href="/CRUD-PreReqs"
+                  key="edit-prerequisites"
+                  active={pathName === '/CRUD-PreReqs'}
+                  style={pathName === '/CRUD-PreReqs' ? activeNavLinkStyle : navLinkStyle}
                 >
                   Add/Edit PreRequisites
                 </Nav.Link>
@@ -144,7 +144,8 @@ const NavBar: React.FC = () => {
                 )}
                 menuVariant="dark"
                 style={containerStyle}
-               className="login-arrow-white">
+                className="login-arrow-white"
+              >
                 <NavDropdown.Item id="login-dropdown-sign-in" href="/auth/signin">
                   <PersonFill />
                   Sign in

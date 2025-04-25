@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getAllPreRequisites, updatePreRequisite, deletePreRequisite, getAllSubjects } from '@/lib/dbActions';
-import { PreRequisite, Subject } from '@prisma/client';
+import { Subject } from '@prisma/client';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 
@@ -11,21 +11,23 @@ export default function EditDeletePreRequisites() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedPreReq, setSelectedPreReq] = useState<any>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+  const [deleteConfirmName, setDeleteConfirmName] = useState<string | null>(null);
 
   const { register, handleSubmit, reset } = useForm();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  async function fetchData() {
+  const fetchData = async () => {
     const [preReqs, subs] = await Promise.all([
       getAllPreRequisites(),
       getAllSubjects(),
     ]);
     setPreRequisites(preReqs);
     setSubjects(subs);
-  }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleEditClick = (preReq: any) => {
     setSelectedPreReq(preReq);
@@ -37,10 +39,17 @@ export default function EditDeletePreRequisites() {
     setShowEditModal(true);
   };
 
-  const handleDelete = async (id: number) => {
-    if (confirm('Are you sure you want to delete this prerequisite?')) {
-      await deletePreRequisite(id);
+  const handleDelete = (id: number, name: string) => {
+    setDeleteConfirmId(id);
+    setDeleteConfirmName(name);
+  };
+
+  const confirmDelete = async () => {
+    if (deleteConfirmId !== null) {
+      await deletePreRequisite(deleteConfirmId);
       fetchData();
+      setDeleteConfirmId(null);
+      setDeleteConfirmName(null);
     }
   };
 
@@ -48,8 +57,8 @@ export default function EditDeletePreRequisites() {
     await updatePreRequisite({
       id: selectedPreReq.id,
       name: data.name,
-      subjectId: parseInt(data.subjectId),
-      gradeLevel: [], // We are not modifying this in the modal as per your instruction
+      subjectId: parseInt(data.subjectId, 10),
+      gradeLevel: [],
     });
     setShowEditModal(false);
     fetchData();
@@ -72,14 +81,29 @@ export default function EditDeletePreRequisites() {
               <td>{preReq.name}</td>
               <td>{preReq.subject?.name}</td>
               <td>
-                <Button variant="warning" size="sm" onClick={() => handleEditClick(preReq)}>Edit</Button>{' '}
-                <Button variant="danger" size="sm" onClick={() => handleDelete(preReq.id)}>Delete</Button>
+                <div className="d-flex gap-2">
+                  <Button
+                    variant="warning"
+                    size="sm"
+                    onClick={() => handleEditClick(preReq)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => handleDelete(preReq.id, preReq.name)}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
+      {/* Edit Modal */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Prerequisite</Modal.Title>
@@ -104,14 +128,27 @@ export default function EditDeletePreRequisites() {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowEditModal(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary">
-              Save Changes
-            </Button>
+            <Button variant="secondary" onClick={() => setShowEditModal(false)}>Cancel</Button>
+            <Button type="submit" variant="primary">Save Changes</Button>
           </Modal.Footer>
         </Form>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={deleteConfirmId !== null} onHide={() => setDeleteConfirmId(null)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete
+          {' '}
+          <strong>{deleteConfirmName}</strong>
+          ?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setDeleteConfirmId(null)}>Cancel</Button>
+          <Button variant="danger" onClick={confirmDelete}>Delete</Button>
+        </Modal.Footer>
       </Modal>
     </div>
   );
