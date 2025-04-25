@@ -1,3 +1,10 @@
+/* eslint-disable max-len */
+/* eslint-disable @next/next/no-async-client-component */
+
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
 import { PrismaClient } from '@/lib/prisma';
 
 const prisma = new PrismaClient();
@@ -8,24 +15,44 @@ export default async function APClassesPage() {
       name: true,
       description: true,
       offered: true,
-      subject: {
-        select: { name: true },
-      },
-      gradeLevels: {
-        select: { level: true },
-      },
-      prerequisites: {
-        select: { name: true },
-      },
+      subject: { select: { name: true } },
+      gradeLevels: { select: { level: true } },
+      prerequisites: { select: { name: true } },
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  return <ClientSideAPClassList classes={classes} />;
+}
+
+function ClientSideAPClassList({ classes }: { classes: any[] }) {
+  const [query, setQuery] = useState('');
+
+  const filtered = classes.filter(cls => cls.name.toLowerCase().includes(query.toLowerCase()));
+
   return (
-    <div>
-      <h1>AP Classes</h1>
+    <div style={{ padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+        <h1 style={{ margin: 0 }}>AP Classes</h1>
+
+        <input
+          type="text"
+          placeholder="Search by class name"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          style={{
+            padding: '10px',
+            width: '100%',
+            maxWidth: '400px',
+            fontSize: '16px',
+            flexShrink: 0,
+          }}
+        />
+      </div>
+
       <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-        {classes.map((cls) => (
-          <a
+        {filtered.map((cls) => (
+          <Link
             key={cls.name}
             href={cls.offered ? `/apclasses/${cls.name}` : '#'}
             style={{
@@ -44,9 +71,7 @@ export default async function APClassesPage() {
                 color: cls.offered ? 'black' : 'gray',
               }}
             >
-              <h2 style={{ margin: '0 0 10px 0' }}>
-                {cls.name.replace('-', ' ').toUpperCase()}
-              </h2>
+              <h2>{cls.name.replace('-', ' ').toUpperCase()}</h2>
               <p>
                 <strong>Subject:</strong>
                 {' '}
@@ -60,20 +85,20 @@ export default async function APClassesPage() {
               <p>
                 <strong>Grade Levels:</strong>
                 {' '}
-                {cls.gradeLevels.map(g => g.level).join(', ')}
+                {cls.gradeLevels.map((g: { level: any; }) => g.level).join(', ')}
               </p>
               <p>
                 <strong>Prerequisites:</strong>
                 {' '}
                 {
                 cls.prerequisites.length > 0
-                  ? cls.prerequisites.map(p => p.name).join(', ')
+                  ? cls.prerequisites.map((p: { name: any; }) => p.name).join(', ')
                   : 'None'
               }
               </p>
               {!cls.offered && <em>Not Offered This Year</em>}
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </div>
