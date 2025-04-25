@@ -4,8 +4,8 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { redirect } from 'next/navigation';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import AddAPClassForm from './AddAPClassForm';
-import EditDeleteAPClasses from './EditDeleteAPClasses';
+import AddAPClassForm from '../../components/AddAPClassForm';
+import EditDeleteAPClasses from '../../components/EditDeleteAPClasses';
 
 const EditClassPage = () => {
   const { data: session, status } = useSession();

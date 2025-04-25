@@ -57,6 +57,16 @@ export async function createAPClass(
     gradeLevels: number[]
   },
 ) {
+  // 1. Check if a class with the same name already exists
+  const existingClass = await prisma.aPClass.findUnique({
+    where: { name: apClass.name },
+  });
+
+  if (existingClass) {
+    throw new Error(`A class with the name "${apClass.name}" already exists.`);
+  }
+
+  // 2. Look up the subject and teacher
   const subject = await prisma.subject.findUnique({
     where: { name: apClass.subjectType },
   });
@@ -69,12 +79,14 @@ export async function createAPClass(
     throw new Error('Subject or Teacher not found.');
   }
 
+  // 3. Resolve grade level IDs
   const gradeLevels = await prisma.gradeLevel.findMany({
     where: {
       level: { in: apClass.gradeLevels },
     },
   });
 
+  // 4. Create new AP class
   const newAPClass = await prisma.aPClass.create({
     data: {
       name: apClass.name,
@@ -90,6 +102,7 @@ export async function createAPClass(
 
   return newAPClass;
 }
+
 
 /**
  * Updates an existing AP class in the database.
@@ -130,7 +143,9 @@ export async function deleteAPClass(id: number) {
 export async function getAllAPClasses() {
   const classes = await prisma.aPClass.findMany({
     include: {
-      subject: true, // assumes there's a Subject relation via subjectId
+      subject: true,
+      teacher: true,
+      gradeLevels: true, // assumes there's a Subject relation via subjectId
     },
     orderBy: {
       name: 'asc',
@@ -177,6 +192,19 @@ export async function deleteSubject(id: number) {
   await prisma.subject.delete({
     where: { id },
   });
+}
+
+/**
+ * Retrieves all subjects from the database.
+ */
+export async function getAllSubjects() {
+  const subjects = await prisma.subject.findMany({
+    orderBy: {
+      name: 'asc',
+    },
+  });
+
+  return subjects;
 }
 
 /**
