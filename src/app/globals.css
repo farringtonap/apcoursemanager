@@ -1,5 +1,7 @@
 html,
 body {
+  background: url("/FHS_football_field.png");
+  background-size: cover;
   --bs-light-rgb: 236, 236, 236;
   box-sizing: border-box;
   height: 100%;
@@ -12,3 +14,8 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.login-arrow-white .dropdown-toggle::after {
+  border-top-color: white !important;
+}
+
