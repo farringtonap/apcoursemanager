@@ -225,7 +225,7 @@ export async function deletePreRequisite(id: number) {
 }
 
 export interface CreateStudentProfileDTO {
-  interests: string[];   //  store a JSON array of strings
+  interests: string[];//  store a JSON array of strings
   previousCourses: string[];
   GPA: number;
   gradeLevel?: number; // optional, since your schema allows null
@@ -234,17 +234,17 @@ export interface CreateStudentProfileDTO {
 
 export async function createStudentProfile(data: CreateStudentProfileDTO) {
   return prisma.studentProfile.create({
-    data: { 
+    data: {
       interests: data.interests,
       previousCourses: data.previousCourses,
       GPA: data.GPA,
-      gradeLevel: data.gradeLevel, 
+      gradeLevel: data.gradeLevel,
     },
   });
 }
 
 export async function getAllStudentProfiles() {
   return prisma.studentProfile.findMany({
-    orderBy: { createdAt: "asc" },
+    orderBy: { createdAt: 'asc' },
   });
 }

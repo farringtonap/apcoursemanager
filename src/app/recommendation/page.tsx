@@ -1,56 +1,54 @@
-// src/app/recommendation/page.tsx
-"use client";
+'use client';
+import { useState, FormEvent } from 'react';
 
-import { useState, FormEvent } from "react";
-
-const PYTHON_API_URL = process.env.NEXT_PUBLIC_PYTHON_API_URL || "http://localhost:8000";
+const PYTHON_API_URL = process.env.NEXT_PUBLIC_PYTHON_API_URL || 'http://localhost:8000';
 
 export default function RecommendationFormPage() {
   // form fields
-  const [interestsText, setInterestsText] = useState("");
-  const [coursesText, setCoursesText] = useState("");
-  const [GPA, setGPA] = useState("");
-  const [gradeLevel, setGradeLevel] = useState("11");
+  const [interestsText, setInterestsText] = useState('');
+  const [coursesText, setCoursesText] = useState('');
+  const [GPA, setGPA] = useState('');
+  const [gradeLevel, setGradeLevel] = useState('11');
 
   // UI states
   const [loading, setLoading] = useState(false);
   const [savedProfile, setSavedProfile] = useState<{ id: number; createdAt: string } | null>(null);
   const [recommendations, setRecommendations] = useState<string[]>([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setRecommendations([]);
     setSavedProfile(null);
 
     // 1) parse
-    const interests = interestsText.split(",").map((s) => s.trim()).filter(Boolean);
-    const previousCourses = coursesText.split(",").map((s) => s.trim()).filter(Boolean);
+    const interests = interestsText.split(',').map((s) => s.trim()).filter(Boolean);
+    const previousCourses = coursesText.split(',').map((s) => s.trim()).filter(Boolean);
     const gpaNum = parseFloat(GPA);
     const gradeNum = parseInt(gradeLevel, 10);
 
     // 2) validate
     if (!interests.length) {
-      return setError("Please enter at least one interest.");
+      return setError('Please enter at least one interest.');
     }
-    if (isNaN(gpaNum)) {
-      return setError("Please enter a valid GPA.");
+    if (Number.isNaN(gpaNum)) {
+      return setError('Please enter a valid GPA.');
     }
 
     setLoading(true);
     try {
       // 3) POST to Next.js API (/src/app/api/student/route.ts)
-      const resp = await fetch("/api/student", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const resp = await fetch('/api/student', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ interests, previousCourses, GPA: gpaNum, gradeLevel: gradeNum }),
       });
 
       if (!resp.ok) {
         // try to pull error message out of JSON
         const err = await resp.json().catch(() => null);
-        throw new Error(err?.error || "Failed to save profile");
+        throw new Error(err?.error || 'Failed to save profile');
       }
 
       // 4) read returned profile (id, createdAt, etc)
@@ -60,13 +58,13 @@ export default function RecommendationFormPage() {
       // 5) GET recommendations from Python FastAPI
       const recResp = await fetch(`${PYTHON_API_URL}/recommend`);
       if (!recResp.ok) {
-        throw new Error("Recommendation service error");
+        throw new Error('Recommendation service error');
       }
       const recs: string[] = await recResp.json();
       setRecommendations(recs);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Something went wrong");
+      setError(err.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -130,7 +128,7 @@ export default function RecommendationFormPage() {
         </div>
 
         <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? "Saving & Recommending..." : "Submit & Get Recommendations"}
+          {loading ? 'Saving & Recommending...' : 'Submit & Get Recommendations'}
         </button>
       </form>
 
