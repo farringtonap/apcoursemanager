@@ -2,115 +2,106 @@
 
 'use client';
 
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import { Container, Nav, Navbar, NavDropdown, Image } from 'react-bootstrap';
+import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { BoxArrowRight, Lock, PersonFill, PersonPlusFill } from 'react-bootstrap-icons';
 
 const NavBar: React.FC = () => {
   const { data: session } = useSession();
   const currentUser = session?.user?.email;
-  const userWithRole = session?.user as { email: string; randomKey: string };
-  const role = userWithRole?.randomKey;
-  const pathName = usePathname();
+  const role = (session?.user as any)?.randomKey; // your role key
+  const path = usePathname();
 
-  const navLinkStyle = { color: 'white' };
-  const navbarStyle = { backgroundColor: '#600a0b' };
-  const containerStyle = { marginLeft: '0', paddingLeft: '0px' };
-  const activeNavLinkStyle = { fontWeight: 'bold' };
-  const navStyle = { marginLeft: '20px' };
-  const dropdownStyle = { color: 'white' };
-  const rightNavStyle = { marginLeft: 'auto', marginRight: '20px' };
+  const navLinkStyle = { color: 'black' };
+  const activeStyle = { color: '#808080' };
 
   return (
-    <div style={{ backgroundColor: '#600a0b' }}>
-  <div style={{ display: 'flex', justifyContent: 'center', padding: '0px 0' }}>
-      <Image src="/FHS_Logo.png" alt="Brand Logo" style={{ height: '80px' }} />
-  </div>
-    <Navbar style={navbarStyle} variant="dark" expand="lg">
-      <Container style={containerStyle} fluid>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto" style={navStyle}>
-            <Nav.Link href="/" style={pathName === '/' ? activeNavLinkStyle : navLinkStyle} active={pathName === '/'}>
+    <Navbar bg="light" expand="lg">
+      <Container fluid className="px-0">
+        <Navbar.Toggle aria-controls="main-nav" />
+        <Navbar.Collapse id="main-nav">
+          <Nav className="me-auto">
+            <Nav.Link
+              as={Link}
+              href="/"
+              style={path === '/' ? activeStyle : navLinkStyle}
+            >
               Home
             </Nav.Link>
+
             <Nav.Link
-              href="/apclasses"
-              style={pathName === '/apclasses' ? activeNavLinkStyle : navLinkStyle}
-              active={pathName === '/apclasses'}
+              as={Link}
+              href="/ap-classes"
+              style={path === '/ap-classes' ? activeStyle : navLinkStyle}
             >
               AP Classes
             </Nav.Link>
+
             <Nav.Link
+              as={Link}
               href="/dashboard"
-              style={pathName === '/dashboard' ? activeNavLinkStyle : navLinkStyle}
-              active={pathName === '/dashboard'}
+              style={path === '/dashboard' ? activeStyle : navLinkStyle}
             >
               Dashboard
             </Nav.Link>
+
             <Nav.Link
-              href="/assessment-form"
-              style={pathName === '/assessment-form' ? activeNavLinkStyle : navLinkStyle}
-              active={pathName === '/assessment-form'}
+              as={Link}
+              href="/recommendation"
+              style={path === '/recommendation' ? activeStyle : navLinkStyle}
             >
               Assessment Form
             </Nav.Link>
-            {currentUser
-              ? [
-                  <Nav.Link id="add-stuff-nav" href="/add" key="add" active={pathName === '/add'} style={navLinkStyle}>
-                    Add Stuff
-                  </Nav.Link>,
-                  // eslint-disable-next-line max-len
-                  <Nav.Link
-                    id="list-stuff-nav"
-                    href="/list"
-                    key="list"
-                    active={pathName === '/list'}
-                    style={navLinkStyle}
-                  >
-                    List Stuff
-                  </Nav.Link>,
-                ]
-              : ''}
-            {currentUser && role === 'ADMIN' ? (
-              // eslint-disable-next-line max-len
+
+            {currentUser && (
+              <>
+                <Nav.Link
+                  as={Link}
+                  href="/add"
+                  style={path === '/add' ? activeStyle : navLinkStyle}
+                >
+                  Add Stuff
+                </Nav.Link>
+                <Nav.Link
+                  as={Link}
+                  href="/list"
+                  style={path === '/list' ? activeStyle : navLinkStyle}
+                >
+                  List Stuff
+                </Nav.Link>
+              </>
+            )}
+
+            {currentUser && role === 'ADMIN' && (
               <Nav.Link
-                id="admin-stuff-nav"
+                as={Link}
                 href="/admin"
-                key="admin"
-                active={pathName === '/admin'}
-                style={navLinkStyle}
+                style={path === '/admin' ? activeStyle : navLinkStyle}
               >
                 Admin
               </Nav.Link>
-            ) : (
-              ''
             )}
           </Nav>
-          <Nav style={rightNavStyle}>
+
+          <Nav className="ms-auto me-3">
             {session ? (
-              // eslint-disable-next-line max-len
-              <NavDropdown id="login-dropdown" title={<span style={dropdownStyle}>{currentUser}</span>} menuVariant="dark">
-                <NavDropdown.Item id="login-dropdown-sign-out" href="/api/auth/signout">
-                  <BoxArrowRight />
-                  Sign Out
+              <NavDropdown title={currentUser} menuVariant="dark">
+                <NavDropdown.Item as={Link} href="/api/auth/signout">
+                  <BoxArrowRight /> Sign Out
                 </NavDropdown.Item>
-                <NavDropdown.Item id="login-dropdown-change-password" href="/auth/change-password">
-                  <Lock />
-                  Change Password
+                <NavDropdown.Item as={Link} href="/auth/change-password">
+                  <Lock /> Change Password
                 </NavDropdown.Item>
               </NavDropdown>
             ) : (
-              // eslint-disable-next-line max-len
-              <NavDropdown id="login-dropdown" title={<span style={dropdownStyle}>Login</span>} menuVariant="dark" style={containerStyle} className="login-arrow-white">
-                <NavDropdown.Item id="login-dropdown-sign-in" href="/auth/signin">
-                  <PersonFill />
-                  Sign in
+              <NavDropdown title="Login" menuVariant="dark">
+                <NavDropdown.Item as={Link} href="/auth/signin">
+                  <PersonFill /> Sign In
                 </NavDropdown.Item>
-                <NavDropdown.Item id="login-dropdown-sign-up" href="/auth/signup">
-                  <PersonPlusFill />
-                  Sign up
+                <NavDropdown.Item as={Link} href="/auth/signup">
+                  <PersonPlusFill /> Sign Up
                 </NavDropdown.Item>
               </NavDropdown>
             )}
@@ -118,7 +109,6 @@ const NavBar: React.FC = () => {
         </Navbar.Collapse>
       </Container>
     </Navbar>
-    </div>
   );
 };
 
