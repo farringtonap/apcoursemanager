@@ -42,7 +42,12 @@ const HomePage: React.FC = () => {
                     onChange={(e) => setInterests(e.target.value)}
                   />
                 </Form.Group>
-                <Button variant="primary" type="submit" className="mt-3 w-100">
+                <Button
+                  type="submit"
+                  className="mt-3 w-100"
+                  style={{
+                    backgroundColor: '#8c1a1c', border: '2px solid #8c1a1c' }}
+                >
                   Get Recommendations
                 </Button>
               </Form>
@@ -66,10 +71,11 @@ const HomePage: React.FC = () => {
 
       {/* New Informational Boxes */}
       <Row className="justify-content-center mt-5">
-        <Col md={4} className="mb-4">
-          <Card>
+        <Col md={4} className="mb-4 d-flex">
+          <Card className="h-100 w-100">
             <Card.Body>
-              <Card.Title>Purpose</Card.Title>
+              <Card.Title className="text-center">Purpose</Card.Title>
+              <hr />
               <Card.Text>
                 To prepare students for the pace and academic rigor of college-level courses.
               </Card.Text>
@@ -77,10 +83,11 @@ const HomePage: React.FC = () => {
           </Card>
         </Col>
 
-        <Col md={4} className="mb-4">
-          <Card>
+        <Col md={4} className="mb-4 d-flex">
+          <Card className="h-100 w-100">
             <Card.Body>
-              <Card.Title>Benefits & Application</Card.Title>
+              <Card.Title className="text-center">Benefits & Application</Card.Title>
+              <hr />
               <Card.Text>
                 <strong>Benefits:</strong>
                 {' '}
@@ -97,10 +104,11 @@ const HomePage: React.FC = () => {
           </Card>
         </Col>
 
-        <Col md={4} className="mb-4">
-          <Card>
+        <Col md={4} className="mb-4 d-flex">
+          <Card className="h-100 w-100">
             <Card.Body>
-              <Card.Title>No-Drop Policy</Card.Title>
+              <Card.Title className="text-center">No-Drop Policy</Card.Title>
+              <hr />
               <Card.Text>
                 There is a strict no-drop policy for an AP class unless there is an exceptional reason.
                 <br />
