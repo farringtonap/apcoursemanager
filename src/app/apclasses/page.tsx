@@ -11,6 +11,7 @@ import { Row, Col, Card } from 'react-bootstrap';
 export default async function APClassesPage() {
   const classes = await prisma.aPClass.findMany({
     select: {
+      id: true,
       name: true,
       description: true,
       offered: true,
@@ -67,12 +68,14 @@ function ClientSideAPClassList({ classes }: { classes: any[] }) {
       {/* Cards Display Section */}
       <Row xs={1} sm={2} md={3} lg={4} className="g-4" style={{ marginTop: '20px' }}>
         {filtered.map((cls) => (
-          <Col key={cls.name}>
+          <Col>
             <Link
-              href={cls.offered ? `/apclasses/${cls.name}` : '#'}
+              key={cls.name}
+              href={cls.offered ? `/apclasses/${cls.id}` : '#'}
               style={{
-                textDecoration: 'none',
                 pointerEvents: cls.offered ? 'auto' : 'none',
+                textDecoration: 'none',
+                width: '300px',
               }}
             >
               <Card
