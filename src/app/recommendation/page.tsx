@@ -1,5 +1,7 @@
 'use client';
+
 import { useState, FormEvent } from 'react';
+import { Form, Button, Alert, Row, Col } from 'react-bootstrap';
 
 const PYTHON_API_URL = process.env.NEXT_PUBLIC_PYTHON_API_URL || 'http://localhost:8000';
 
@@ -12,10 +14,14 @@ export default function RecommendationFormPage() {
 
   // UI states
   const [loading, setLoading] = useState(false);
-  const [savedProfile, setSavedProfile] = useState<{ id: number; createdAt: string } | null>(null);
+  const [savedProfile, setSavedProfile] = useState<{
+    id: number;
+    createdAt: string;
+  } | null>(null);
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [error, setError] = useState('');
 
+  /* eslint-disable-next-line consistent-return */
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
@@ -23,8 +29,14 @@ export default function RecommendationFormPage() {
     setSavedProfile(null);
 
     // 1) parse
-    const interests = interestsText.split(',').map((s) => s.trim()).filter(Boolean);
-    const previousCourses = coursesText.split(',').map((s) => s.trim()).filter(Boolean);
+    const interests = interestsText
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const previousCourses = coursesText
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
     const gpaNum = parseFloat(GPA);
     const gradeNum = parseInt(gradeLevel, 10);
 
@@ -42,7 +54,12 @@ export default function RecommendationFormPage() {
       const resp = await fetch('/api/student', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ interests, previousCourses, GPA: gpaNum, gradeLevel: gradeNum }),
+        body: JSON.stringify({
+          interests,
+          previousCourses,
+          GPA: gpaNum,
+          gradeLevel: gradeNum,
+        }),
       });
 
       if (!resp.ok) {
@@ -74,79 +91,88 @@ export default function RecommendationFormPage() {
     <div className="container mt-4">
       <h1>AP Class Recommendation</h1>
 
-      <form onSubmit={handleSubmit} className="mb-4">
-        {error && <div className="alert alert-danger">{error}</div>}
+      <Form onSubmit={handleSubmit} className="mb-4">
+        {error && <Alert variant="danger">{error}</Alert>}
 
-        <div className="mb-3">
-          <label className="form-label">Your Interests</label>
-          <input
+        <Form.Group className="mb-3" controlId="interests">
+          <Form.Label>Your Interests</Form.Label>
+          <Form.Control
             type="text"
-            className="form-control"
             placeholder="e.g. calculus, robotics, AI"
             value={interestsText}
             onChange={(e) => setInterestsText(e.target.value)}
           />
-          <div className="form-text">Comma-separate your interests.</div>
-        </div>
+          <Form.Text className="text-muted">
+            Comma-separate your interests.
+          </Form.Text>
+        </Form.Group>
 
-        <div className="mb-3">
-          <label className="form-label">Previous Courses</label>
-          <input
+        <Form.Group className="mb-3" controlId="courses">
+          <Form.Label>Previous Courses</Form.Label>
+          <Form.Control
             type="text"
-            className="form-control"
             placeholder="e.g. Algebra II, Biology"
             value={coursesText}
             onChange={(e) => setCoursesText(e.target.value)}
           />
-          <div className="form-text">Comma-separate courses you’ve taken.</div>
-        </div>
+          <Form.Text className="text-muted">
+            Comma-separate courses you&apos;ve taken.
+          </Form.Text>
+        </Form.Group>
 
-        <div className="row">
-          <div className="col-md-6 mb-3">
-            <label className="form-label">GPA</label>
-            <input
-              type="number"
-              step="0.01"
-              className="form-control"
-              value={GPA}
-              onChange={(e) => setGPA(e.target.value)}
-            />
-          </div>
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Grade Level</label>
-            <select
-              className="form-select"
-              value={gradeLevel}
-              onChange={(e) => setGradeLevel(e.target.value)}
-            >
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-            </select>
-          </div>
-        </div>
+        <Row>
+          <Col md={6} className="mb-3">
+            <Form.Group controlId="gpa">
+              <Form.Label>GPA</Form.Label>
+              <Form.Control
+                type="number"
+                step="0.01"
+                value={GPA}
+                onChange={(e) => setGPA(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col md={6} className="mb-3">
+            <Form.Group controlId="grade-level">
+              <Form.Label>Grade Level</Form.Label>
+              <Form.Select
+                value={gradeLevel}
+                onChange={(e) => setGradeLevel(e.target.value)}
+              >
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </Form.Select>
+            </Form.Group>
+          </Col>
+        </Row>
 
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? 'Saving & Recommending...' : 'Submit & Get Recommendations'}
-        </button>
-      </form>
+        <Button type="submit" variant="primary" disabled={loading}>
+          {loading
+            ? 'Saving & Recommending...'
+            : 'Submit & Get Recommendations'}
+        </Button>
+      </Form>
 
-      {/* Show confirmation of saved profile */}
       {savedProfile && (
-        <div className="alert alert-success">
-          Profile saved (ID: {savedProfile.id}) at{" "}
-          {new Date(savedProfile.createdAt).toLocaleString()}.
-        </div>
+        <Alert variant="success">
+          Profile saved (ID:
+          {savedProfile.id}
+          )
+          at
+          {' '}
+          {new Date(savedProfile.createdAt).toLocaleString()}
+          .
+        </Alert>
       )}
 
-      {/* Recommendations */}
       {recommendations.length > 0 && (
         <div>
           <h2>Recommendations</h2>
           <ul className="list-group">
-            {recommendations.map((r, i) => (
-              <li key={i} className="list-group-item">
+            {recommendations.map((r) => (
+              <li key={r} className="list-group-item">
                 {r}
               </li>
             ))}
