@@ -29,6 +29,36 @@ export async function createUser(info: {
 }
 
 /**
+ * Allows admins to add authorized site maintainers
+ * @param info, an object containing the users email
+*/
+export async function createAuthorizedUser(info: { email: string, role: string }) {
+  try {
+    await prisma.authorizedUser.create({
+      data: {
+        email: info.email,
+        role: info.role as Role,
+      },
+    });
+  } catch (err) {
+    return (err);
+  }
+
+  return ('');
+}
+
+/**
+ * Allows admins to delete a site maintainer. This is similar to
+ * revoking their access.
+ * @param info, an object containing the users email
+ */
+export async function deleteAuthorizedUser(info: { email: string }) {
+  await prisma.authorizedUser.delete({
+    where: { email: info.email },
+  });
+}
+
+/**
  * Changes the password of an existing user in the database.
  * @param credentials, an object with the following properties: email, password.
  */
@@ -222,5 +252,30 @@ export async function updatePreRequisite(prerequisite: PreRequisite & { gradeLev
 export async function deletePreRequisite(id: number) {
   await prisma.preRequisite.delete({
     where: { id },
+  });
+}
+
+export interface CreateStudentProfileDTO {
+  interests: string[];//  store a JSON array of strings
+  previousCourses: string[];
+  GPA: number;
+  gradeLevel?: number; // optional, since your schema allows null
+
+}
+
+export async function createStudentProfile(data: CreateStudentProfileDTO) {
+  return prisma.studentProfile.create({
+    data: {
+      interests: data.interests,
+      previousCourses: data.previousCourses,
+      GPA: data.GPA,
+      gradeLevel: data.gradeLevel,
+    },
+  });
+}
+
+export async function getAllStudentProfiles() {
+  return prisma.studentProfile.findMany({
+    orderBy: { createdAt: 'asc' },
   });
 }
