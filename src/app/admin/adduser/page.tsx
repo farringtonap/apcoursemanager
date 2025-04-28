@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth';
 import { adminProtectedPage } from '@/lib/page-protection';
-import { AddAuthorizedUserForm } from '@/components/AddAuthorizedUserForm';
+import AddAuthorizedUserForm from '@/components/AddAuthorizedUserForm';
 import authOptions from '@/lib/authOptions';
 
 const AddUserPage = async () => {
