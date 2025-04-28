@@ -112,6 +112,7 @@ enum Role {
 
 model AuthorizedUser {
   email String @id @unique
+  role  Role   @default(TEACHER)
 }
 
 model User {
