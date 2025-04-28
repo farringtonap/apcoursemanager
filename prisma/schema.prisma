@@ -24,23 +24,22 @@ generator client {
 /// - Many-to-many with GradeLevel (indicating which grades are eligible).
 ///
 model APClass {
-  id             Int           @id @default(autoincrement())
-  name           String        
-  description    String
-  resources      String?
-  offered        Boolean
-  subjectId      Int
-  teacherEmail   String  @unique
+  id           Int     @id @default(autoincrement())
+  name         String
+  description  String
+  resources    String?
+  offered      Boolean
+  subjectId    Int
+  teacherEmail String  @unique
 
   // Relations:
-  subject        Subject       @relation(fields: [subjectId], references: [id])
-  teacher        User          @relation(fields: [teacherEmail], references: [email])
-  prerequisites  PreRequisite[] @relation("APClassPrerequisites")
-  gradeLevels    GradeLevel[]  @relation("APClassGradeLevels")
+  subject       Subject        @relation(fields: [subjectId], references: [id])
+  teacher       User           @relation(fields: [teacherEmail], references: [email])
+  prerequisites PreRequisite[] @relation("APClassPrerequisites")
+  gradeLevels   GradeLevel[]   @relation("APClassGradeLevels")
 
   @@map("ap_classes")
 }
-
 
 ///
 /// Model: Subject
@@ -53,9 +52,9 @@ model APClass {
 /// - One-to-many with PreRequisite (each subject may have multiple prerequisite defined).
 ///
 model Subject {
-  id           Int           @id @default(autoincrement())
-  name         String        @unique
-  
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
   apClasses    APClass[]
   prerequisite PreRequisite[]
 
@@ -73,14 +72,14 @@ model Subject {
 /// - Many-to-many with GradeLevel (defines applicable grade levels for the prerequisite).
 ///
 model PreRequisite {
-  id          Int         @id @default(autoincrement())
-  name        String
-  subjectId   Int         
+  id        Int    @id @default(autoincrement())
+  name      String
+  subjectId Int
 
   // Relations:
-  subject     Subject     @relation(fields: [subjectId], references: [id])
-  apClasses   APClass[]   @relation("APClassPrerequisites")
-  gradeLevels GradeLevel[]@relation("PreRequisiteGradeLevels")
+  subject     Subject      @relation(fields: [subjectId], references: [id])
+  apClasses   APClass[]    @relation("APClassPrerequisites")
+  gradeLevels GradeLevel[] @relation("PreRequisiteGradeLevels")
 
   @@map("prerequisites")
 }
@@ -94,16 +93,15 @@ model PreRequisite {
 /// - Many-to-many with APClass and PreRequisite.
 ///
 model GradeLevel {
-  id            Int          @id @default(autoincrement())
-  level         Int          @unique
+  id    Int @id @default(autoincrement())
+  level Int @unique
 
   // Relations:
-  apClasses     APClass[]    @relation("APClassGradeLevels")
+  apClasses     APClass[]      @relation("APClassGradeLevels")
   preRequisites PreRequisite[] @relation("PreRequisiteGradeLevels")
 
   @@map("grade_levels")
 }
-
 
 // User and Role
 
@@ -112,24 +110,26 @@ enum Role {
   ADMIN
 }
 
-model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
-  firstName String
-  lastName String
-  role     Role   @default(TEACHER)
-  
-  apClass  APClass?
-
+model AuthorizedUser {
+  email String @id @unique
 }
 
+model User {
+  id        Int    @id @default(autoincrement())
+  email     String @unique
+  password  String
+  firstName String
+  lastName  String
+  role      Role   @default(TEACHER)
+
+  apClass APClass?
+}
 
 model StudentProfile {
-  id Int @id @default(autoincrement())
-  interests       Json     // e.g. ["robotics","calculus","AI"]
+  id              Int      @id @default(autoincrement())
+  interests       Json // e.g. ["robotics","calculus","AI"]
   previousCourses Json
-  GPA             Float   
+  GPA             Float
   gradeLevel      Int?
   createdAt       DateTime @default(now())
 
