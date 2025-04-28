@@ -31,12 +31,19 @@ export async function createUser(info: {
  * Allows admins to add authorized site maintainers
  * @param info, an object containing the users email
 */
-export async function createAuthorizedUser(info: { email: string }) {
-  await prisma.authorizedUser.create({
-    data: {
-      email: info.email,
-    },
-  });
+export async function createAuthorizedUser(info: { email: string, role: string }) {
+  try {
+    await prisma.authorizedUser.create({
+      data: {
+        email: info.email,
+        role: info.role as Role,
+      },
+    });
+  } catch (err) {
+    return (err);
+  }
+
+  return ('');
 }
 
 /**

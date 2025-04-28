@@ -17,4 +17,5 @@ export const EditStuffSchema = Yup.object({
 
 export const AddAuthorizedUserSchema = Yup.object({
   email: Yup.string().email().required(),
+  role: Yup.string().oneOf(['TEACHER', 'ADMIN']).required().default('TEACHER'),
 });
