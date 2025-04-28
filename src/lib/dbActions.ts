@@ -28,6 +28,29 @@ export async function createUser(info: {
 }
 
 /**
+ * Allows admins to add authorized site maintainers
+ * @param info, an object containing the users email
+*/
+export async function createAuthorizedUser(info: { email: string }) {
+  await prisma.authorizedUser.create({
+    data: {
+      email: info.email,
+    },
+  });
+}
+
+/**
+ * Allows admins to delete a site maintainer. This is similar to
+ * revoking their access.
+ * @param info, an object containing the users email
+ */
+export async function deleteAuthorizedUser(info: { email: string }) {
+  await prisma.authorizedUser.delete({
+    where: { email: info.email },
+  });
+}
+
+/**
  * Changes the password of an existing user in the database.
  * @param credentials, an object with the following properties: email, password.
  */
