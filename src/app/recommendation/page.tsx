@@ -1,8 +1,7 @@
 'use client';
 
-
 import { useState, FormEvent } from 'react';
-import { Form, Button, Alert, Row, Col } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 
 const PYTHON_API_URL = process.env.NEXT_PUBLIC_PYTHON_API_URL || 'http://localhost:8000';
 
