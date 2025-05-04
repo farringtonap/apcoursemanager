@@ -14,7 +14,18 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from db import AsyncSessionLocal  # your session factory
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(title="AP Recommendation Service")
+
+# allow the React/Next.js origin to hit your endpoints
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # your front-end URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Create tables if missing (dev only)
 @app.on_event("startup")
