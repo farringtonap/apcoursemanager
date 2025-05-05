@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
+CREATE TYPE "Role" AS ENUM ('TEACHER', 'ADMIN');
 
 -- CreateTable
 CREATE TABLE "ap_classes" (
@@ -9,20 +9,9 @@ CREATE TABLE "ap_classes" (
     "resources" TEXT,
     "offered" BOOLEAN NOT NULL,
     "subjectId" INTEGER NOT NULL,
-    "teacherId" INTEGER NOT NULL,
+    "teacherEmail" TEXT NOT NULL,
 
     CONSTRAINT "ap_classes_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "teachers" (
-    "id" SERIAL NOT NULL,
-    "firstName" TEXT NOT NULL,
-    "lastName" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "subjectId" INTEGER NOT NULL,
-
-    CONSTRAINT "teachers_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -55,9 +44,23 @@ CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "role" "Role" NOT NULL DEFAULT 'USER',
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'TEACHER',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "student_profiles" (
+    "id" SERIAL NOT NULL,
+    "interests" JSONB NOT NULL,
+    "previousCourses" JSONB NOT NULL,
+    "GPA" DOUBLE PRECISION NOT NULL,
+    "gradeLevel" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "student_profiles_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -79,19 +82,13 @@ CREATE TABLE "_PreRequisiteGradeLevels" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ap_classes_teacherId_key" ON "ap_classes"("teacherId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "teachers_email_key" ON "teachers"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "teachers_subjectId_key" ON "teachers"("subjectId");
+CREATE UNIQUE INDEX "ap_classes_teacherEmail_key" ON "ap_classes"("teacherEmail");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "subjects_name_key" ON "subjects"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "prerequisites_subjectId_key" ON "prerequisites"("subjectId");
+CREATE UNIQUE INDEX "grade_levels_level_key" ON "grade_levels"("level");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
@@ -118,10 +115,7 @@ CREATE INDEX "_PreRequisiteGradeLevels_B_index" ON "_PreRequisiteGradeLevels"("B
 ALTER TABLE "ap_classes" ADD CONSTRAINT "ap_classes_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "subjects"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ap_classes" ADD CONSTRAINT "ap_classes_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "teachers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "teachers" ADD CONSTRAINT "teachers_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "subjects"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ap_classes" ADD CONSTRAINT "ap_classes_teacherEmail_fkey" FOREIGN KEY ("teacherEmail") REFERENCES "User"("email") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "prerequisites" ADD CONSTRAINT "prerequisites_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "subjects"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

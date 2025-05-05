@@ -123,3 +123,15 @@ model User {
   apClass  APClass[]
 
 }
+
+
+model StudentProfile {
+  id Int @id @default(autoincrement())
+  interests       Json     // e.g. ["robotics","calculus","AI"]
+  previousCourses Json
+  GPA             Float   
+  gradeLevel      Int?
+  createdAt       DateTime @default(now())
+
+  @@map("student_profiles")
+}

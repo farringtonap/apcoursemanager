@@ -1,11 +1,14 @@
-/* eslint-disable react/jsx-indent, @typescript-eslint/indent */
-
 'use client';
 
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { Container, Nav, Navbar, NavDropdown, Image } from 'react-bootstrap';
-import { BoxArrowRight, Lock, PersonFill, PersonPlusFill } from 'react-bootstrap-icons';
+import {
+  BoxArrowRight,
+  Lock,
+  PersonFill,
+  PersonPlusFill,
+} from 'react-bootstrap-icons';
 
 const NavBar: React.FC = () => {
   const { data: session } = useSession();
@@ -24,44 +27,58 @@ const NavBar: React.FC = () => {
 
   return (
     <div style={{ backgroundColor: '#600a0b' }}>
-  <div style={{ display: 'flex', justifyContent: 'center', padding: '0px 0' }}>
-      <Image src="/FHS_Logo.png" alt="Brand Logo" style={{ height: '80px' }} />
-  </div>
-    <Navbar style={navbarStyle} variant="dark" expand="lg">
-      <Container style={containerStyle} fluid>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto" style={navStyle}>
-            <Nav.Link
-              href="/"
-              style={pathName === '/' ? activeNavLinkStyle : navLinkStyle}
-              active={pathName === '/'}
-            >
-              Home
-            </Nav.Link>
-            <Nav.Link
-              href="/apclasses"
-              style={pathName === '/apclasses' ? activeNavLinkStyle : navLinkStyle}
-              active={pathName === '/apclasses'}
-            >
-              AP Classes
-            </Nav.Link>
-            <Nav.Link
-              href="/dashboard"
-              style={pathName === '/dashboard' ? activeNavLinkStyle : navLinkStyle}
-              active={pathName === '/dashboard'}
-            >
-              Dashboard
-            </Nav.Link>
-            <Nav.Link
-              href="/assessment-form"
-              style={pathName === '/assessment-form' ? activeNavLinkStyle : navLinkStyle}
-              active={pathName === '/assessment-form'}
-            >
-              Assessment Form
-            </Nav.Link>
-            {currentUser
-              ? [
+      <div
+        style={{ display: 'flex', justifyContent: 'center', padding: '0px 0' }}
+      >
+        <Image
+          src="/FHS_Logo.png"
+          alt="Brand Logo"
+          style={{ height: '80px' }}
+        />
+      </div>
+      <Navbar style={navbarStyle} variant="dark" expand="lg">
+        <Container style={containerStyle} fluid>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto" style={navStyle}>
+              <Nav.Link
+                href="/"
+                style={pathName === '/' ? activeNavLinkStyle : navLinkStyle}
+                active={pathName === '/'}
+              >
+                Home
+              </Nav.Link>
+              <Nav.Link
+                href="/apclasses"
+                style={
+                  pathName === '/apclasses' ? activeNavLinkStyle : navLinkStyle
+                }
+                active={pathName === '/apclasses'}
+              >
+                AP Classes
+              </Nav.Link>
+              <Nav.Link
+                href="/dashboard"
+                style={
+                  pathName === '/dashboard' ? activeNavLinkStyle : navLinkStyle
+                }
+                active={pathName === '/dashboard'}
+              >
+                Dashboard
+              </Nav.Link>
+              <Nav.Link
+                href="/recommendation"
+                style={
+                  pathName === '/recommendation'
+                    ? activeNavLinkStyle
+                    : navLinkStyle
+                }
+                active={pathName === '/recommendation'}
+              >
+                Assessment Form
+              </Nav.Link>
+              {currentUser
+                ? [
                   <Nav.Link
                     id="add-stuff-nav"
                     href="/add"
@@ -81,75 +98,74 @@ const NavBar: React.FC = () => {
                     List Stuff
                   </Nav.Link>,
                 ]
-              : ''}
-            {currentUser && role === 'ADMIN' && (
-              <>
+                : ''}
+              {currentUser && role === 'ADMIN' ? (
+                // eslint-disable-next-line max-len
                 <Nav.Link
                   id="admin-stuff-nav"
                   href="/admin"
                   key="admin"
                   active={pathName === '/admin'}
-                  style={pathName === '/admin' ? activeNavLinkStyle : navLinkStyle}
+                  style={navLinkStyle}
                 >
                   Admin
                 </Nav.Link>
-                <Nav.Link
-                  id="edit-courses-nav"
-                  href="/edit-class"
-                  key="edit-courses"
-                  active={pathName === '/edit-class'}
-                  style={pathName === '/edit-class' ? activeNavLinkStyle : navLinkStyle}
+              ) : (
+                ''
+              )}
+            </Nav>
+            <Nav style={rightNavStyle}>
+              {session ? (
+                // eslint-disable-next-line max-len
+                <NavDropdown
+                  id="login-dropdown"
+                  title={<span style={dropdownStyle}>{currentUser}</span>}
+                  menuVariant="dark"
                 >
-                  Add/Edit Courses
-                </Nav.Link>
-              </>
-            )}
-          </Nav>
-          <Nav style={rightNavStyle}>
-            {session ? (
-              <NavDropdown
-                id="login-dropdown"
-                title={(
-                  <span style={dropdownStyle}>
-                    {currentUser}
-                  </span>
-                )}
-                menuVariant="dark"
-              >
-                <NavDropdown.Item id="login-dropdown-sign-out" href="/api/auth/signout">
-                  <BoxArrowRight />
-                  Sign Out
-                </NavDropdown.Item>
-                <NavDropdown.Item id="login-dropdown-change-password" href="/auth/change-password">
-                  <Lock />
-                  Change Password
-                </NavDropdown.Item>
-              </NavDropdown>
-            ) : (
-              <NavDropdown
-                id="login-dropdown"
-                title={(
-                  <span style={dropdownStyle}>
-                    Login
-                  </span>
-                )}
-                menuVariant="dark"
-                style={containerStyle}
-               className="login-arrow-white">
-                <NavDropdown.Item id="login-dropdown-sign-in" href="/auth/signin">
-                  <PersonFill />
-                  Sign in
-                </NavDropdown.Item>
-                <NavDropdown.Item id="login-dropdown-sign-up" href="/auth/signup">
-                  <PersonPlusFill />
-                  Sign up
-                </NavDropdown.Item>
-              </NavDropdown>
-            )}
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+                  <NavDropdown.Item
+                    id="login-dropdown-sign-out"
+                    href="/api/auth/signout"
+                  >
+                    <BoxArrowRight />
+                    Sign Out
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    id="login-dropdown-change-password"
+                    href="/auth/change-password"
+                  >
+                    <Lock />
+                    Change Password
+                  </NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                // eslint-disable-next-line max-len
+                <NavDropdown
+                  id="login-dropdown"
+                  title={<span style={dropdownStyle}>Login</span>}
+                  menuVariant="dark"
+                  style={containerStyle}
+                  className="login-arrow-white"
+                >
+                  <NavDropdown.Item
+                    id="login-dropdown-sign-in"
+                    href="/auth/signin"
+                  >
+                    <PersonFill />
+                    Sign in
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    id="login-dropdown-sign-up"
+                    href="/auth/signup"
+                  >
+                    <PersonPlusFill />
+                    Sign up
+                  </NavDropdown.Item>
+                </NavDropdown>
+              )}
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
     </div>
   );
 };
