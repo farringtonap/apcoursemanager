@@ -24,7 +24,7 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
     register,
     handleSubmit,
     reset,
-    setValue, // ✅ Step 3 - Import setValue
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(AddAPClassSchema),
@@ -34,8 +34,8 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
     const parsedData = {
       ...data,
       offered: data.offered === 'true',
-      gradeLevels: [].concat(data.gradeLevels || []).map((level: string) => parseInt(level, 10)),
-      preRequisiteIds: data.preRequisiteIds || [], // ✅ Step 4 - Keep this
+      gradeLevels: data.gradeLevels || [],
+      preRequisiteIds: data.preRequisiteIds || [],
     };
 
     try {
@@ -50,6 +50,13 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
 
   if (status === 'loading') return <LoadingSpinner />;
   if (status === 'unauthenticated') redirect('/auth/signin');
+
+  const gradeLevelOptions = [
+    { value: 9, label: '9' },
+    { value: 10, label: '10' },
+    { value: 11, label: '11' },
+    { value: 12, label: '12' },
+  ];
 
   return (
     <Container className="py-3">
@@ -122,7 +129,7 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
                   <div className="invalid-feedback">{errors.description?.message}</div>
                 </Form.Group>
 
-                {/* ✅ Step 2 - Replace <select multiple> with react-select */}
+                {/* Pre-Requisites */}
                 <Form.Group>
                   <Form.Label>Pre-Requisites</Form.Label>
                   <Select
@@ -137,19 +144,19 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
                   <div className="invalid-feedback d-block">{errors.preRequisiteIds?.message}</div>
                 </Form.Group>
 
+                {/* ✅ Updated Grade Levels to use react-select */}
                 <Form.Group>
                   <Form.Label>Grade Levels</Form.Label>
-                  <Form.Select
-                    {...register('gradeLevels')}
-                    multiple
+                  <Select
+                    isMulti
+                    options={gradeLevelOptions}
+                    onChange={(selectedOptions) => {
+                      const levels = selectedOptions.map((option) => option.value);
+                      setValue('gradeLevels', levels);
+                    }}
                     className={errors.gradeLevels ? 'is-invalid' : ''}
-                  >
-                    <option value={9}>9</option>
-                    <option value={10}>10</option>
-                    <option value={11}>11</option>
-                    <option value={12}>12</option>
-                  </Form.Select>
-                  <div className="invalid-feedback">{errors.gradeLevels?.message}</div>
+                  />
+                  <div className="invalid-feedback d-block">{errors.gradeLevels?.message}</div>
                 </Form.Group>
 
                 <Form.Group className="form-group pt-3">

@@ -6,12 +6,12 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { createPreRequisite, getAllSubjects } from '@/lib/dbActions';
 import { Subject } from '@prisma/client';
+import swal from 'sweetalert';
 
 export default function AddPreRequisites() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const { register, handleSubmit, reset } = useForm();
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     async function fetchSubjects() {
@@ -28,13 +28,12 @@ export default function AddPreRequisites() {
         subject: data.subject,
         gradeLevels: [],
       });
-      setSuccess('Prerequisite added successfully.');
       setError('');
       reset();
+      swal('Success', 'Prerequisite added successfully!', 'success', { timer: 2000 });
       window.location.reload();
     } catch (err: any) {
       setError(err.message || 'Something went wrong.');
-      setSuccess('');
     }
   };
 
@@ -71,7 +70,6 @@ export default function AddPreRequisites() {
         <button type="submit" className="btn btn-primary">Add Prerequisite</button>
 
         {error && <div className="text-danger mt-2">{error}</div>}
-        {success && <div className="text-success mt-2">{success}</div>}
       </form>
     </div>
   );

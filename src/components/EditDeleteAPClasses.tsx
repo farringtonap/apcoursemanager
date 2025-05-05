@@ -34,6 +34,7 @@ const EditDeleteAPClasses: React.FC = () => {
   const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([]);
   const [allPreRequisites, setAllPreRequisites] = useState<{ id: number; name: string }[]>([]);
   const [selectedPreRequisites, setSelectedPreRequisites] = useState<{ value: number; label: string }[]>([]);
+  const [selectedGradeLevels, setSelectedGradeLevels] = useState<{ value: number; label: string }[]>([]);
 
   const fetchClasses = async () => {
     try {
@@ -74,7 +75,13 @@ const EditDeleteAPClasses: React.FC = () => {
         currentClass.prerequisites.map((pr) => ({
           value: pr.id,
           label: pr.name,
-        })),
+        }))
+      );
+      setSelectedGradeLevels(
+        currentClass.gradeLevels.map((gl) => ({
+          value: gl.id,
+          label: gl.level.toString(),
+        }))
       );
     }
   }, [currentClass]);
@@ -115,9 +122,6 @@ const EditDeleteAPClasses: React.FC = () => {
 
     try {
       const formData = new FormData(e.target);
-      const gradeLevelIds = Array.from(formData.getAll('gradeLevels')).map((level) => ({
-        id: parseInt(level as string, 10),
-      }));
 
       const updated = {
         id: currentClass.id,
@@ -127,7 +131,7 @@ const EditDeleteAPClasses: React.FC = () => {
         offered: formData.get('offered') === 'true',
         subjectId: parseInt(formData.get('subjectId') as string, 10),
         teacherEmail: formData.get('teacherEmail') as string,
-        gradeLevel: gradeLevelIds,
+        gradeLevel: selectedGradeLevels.map((gl) => ({ id: gl.value })),
         preRequisiteIds: selectedPreRequisites.map((pr) => pr.value),
       };
 
@@ -259,16 +263,17 @@ const EditDeleteAPClasses: React.FC = () => {
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Grade Levels</Form.Label>
-                  <Form.Select
-                    name="gradeLevels"
-                    multiple
-                    defaultValue={currentClass.gradeLevels.map((g) => g.id.toString())}
-                  >
-                    <option value="1">9</option>
-                    <option value="2">10</option>
-                    <option value="3">11</option>
-                    <option value="4">12</option>
-                  </Form.Select>
+                  <Select
+                    isMulti
+                    options={[
+                      { value: 1, label: '9' },
+                      { value: 2, label: '10' },
+                      { value: 3, label: '11' },
+                      { value: 4, label: '12' },
+                    ]}
+                    value={selectedGradeLevels}
+                    onChange={(options) => setSelectedGradeLevels(options as any)}
+                  />
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Pre-Requisites</Form.Label>

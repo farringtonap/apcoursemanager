@@ -5,6 +5,7 @@ import { getAllPreRequisites, updatePreRequisite, deletePreRequisite, getAllSubj
 import { Subject } from '@prisma/client';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
+import swal from 'sweetalert';
 
 export default function EditDeletePreRequisites() {
   const [preRequisites, setPreRequisites] = useState<any[]>([]);
@@ -46,22 +47,34 @@ export default function EditDeletePreRequisites() {
 
   const confirmDelete = async () => {
     if (deleteConfirmId !== null) {
-      await deletePreRequisite(deleteConfirmId);
-      fetchData();
-      setDeleteConfirmId(null);
-      setDeleteConfirmName(null);
+      try {
+        await deletePreRequisite(deleteConfirmId);
+        await fetchData();
+        setDeleteConfirmId(null);
+        setDeleteConfirmName(null);
+        swal('Deleted!', 'Prerequisite has been deleted.', 'success', { timer: 2000 });
+      } catch (err) {
+        console.error(err);
+        swal('Error', 'Failed to delete prerequisite.', 'error');
+      }
     }
   };
 
   const onSubmit = async (data: any) => {
-    await updatePreRequisite({
-      id: selectedPreReq.id,
-      name: data.name,
-      subjectId: parseInt(data.subjectId, 10),
-      gradeLevel: [],
-    });
-    setShowEditModal(false);
-    fetchData();
+    try {
+      await updatePreRequisite({
+        id: selectedPreReq.id,
+        name: data.name,
+        subjectId: parseInt(data.subjectId, 10),
+        gradeLevel: [],
+      });
+      setShowEditModal(false);
+      await fetchData();
+      swal('Success', 'Prerequisite updated successfully!', 'success', { timer: 2000 });
+    } catch (err) {
+      console.error(err);
+      swal('Error', 'Failed to update prerequisite.', 'error');
+    }
   };
 
   return (
@@ -140,10 +153,7 @@ export default function EditDeletePreRequisites() {
           <Modal.Title>Confirm Deletion</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete
-          {' '}
-          <strong>{deleteConfirmName}</strong>
-          ?
+          Are you sure you want to delete <strong>{deleteConfirmName}</strong>?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setDeleteConfirmId(null)}>Cancel</Button>
