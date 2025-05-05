@@ -290,6 +290,31 @@ export async function deletePreRequisite(id: number) {
   });
 }
 
+export interface CreateStudentProfileDTO {
+  interests: string[];//  store a JSON array of strings
+  previousCourses: string[];
+  GPA: number;
+  gradeLevel?: number; // optional, since your schema allows null
+
+}
+
+export async function createStudentProfile(data: CreateStudentProfileDTO) {
+  return prisma.studentProfile.create({
+    data: {
+      interests: data.interests,
+      previousCourses: data.previousCourses,
+      GPA: data.GPA,
+      gradeLevel: data.gradeLevel,
+    },
+  });
+}
+
+export async function getAllStudentProfiles() {
+  return prisma.studentProfile.findMany({
+    orderBy: { createdAt: 'asc' },
+  });
+}
+
 /**
  * Retrieves all prerequisites from the database, including subject and grade level info.
  */
