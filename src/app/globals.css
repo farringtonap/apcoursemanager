@@ -1,5 +1,7 @@
 html,
 body {
+  background: url("/FHS_football_field.png");
+  background-size: fill;
   --bs-light-rgb: 236, 236, 236;
   box-sizing: border-box;
   height: 100%;

@@ -30,7 +30,7 @@ model APClass {
   resources      String?
   offered        Boolean
   subjectId      Int
-  teacherEmail   String
+  teacherEmail   String       @unique
 
   // Relations:
   subject        Subject       @relation(fields: [subjectId], references: [id])
@@ -122,4 +122,16 @@ model User {
   
   apClass  APClass[]
 
+}
+
+
+model StudentProfile {
+  id Int @id @default(autoincrement())
+  interests       Json     // e.g. ["robotics","calculus","AI"]
+  previousCourses Json
+  GPA             Float   
+  gradeLevel      Int?
+  createdAt       DateTime @default(now())
+
+  @@map("student_profiles")
 }
