@@ -29,6 +29,48 @@
       "firstName": "Rocky",
       "lastName": "Ohua",
       "role": "TEACHER"
+    },
+    {
+      "email": "john@example.com",
+      "firstName": "john",
+      "lastName": "Smith",
+      "role": "TEACHER"
+    },
+    {
+      "email": "brick@example.com",
+      "firstName": "Brick",
+      "lastName": "Revis",
+      "role": "TEACHER"
+    },
+    {
+      "email": "calvin@example.com",
+      "firstName": "Calvin",
+      "lastName": "Hobbes",
+      "role": "TEACHER"
+    },
+    {
+      "email": "edgar@example.com",
+      "firstName": "Edgar",
+      "lastName": "Allan Poe",
+      "role": "TEACHER"
+    },
+    {
+      "email": "franklin@example.com",
+      "firstName": "Franklin",
+      "lastName": "Benjamin",
+      "role": "TEACHER"
+    },
+    {
+      "email": "gregory@example.com",
+      "firstName": "Gregory",
+      "lastName": "House",
+      "role": "TEACHER"
+    },
+    {
+      "email": "henry@example.com",
+      "firstName": "Henry",
+      "lastName": "Davidson",
+      "role": "TEACHER"
     }
   ],
   "gradeLevels": [9, 10, 11, 12],
@@ -53,6 +95,13 @@
       "subject": "Math",
       "apClasses": ["Calculus AB", "Precalculus"],
       "gradeLevels": [9, 10, 11, 12]
+    },
+    {
+      "name": "World History",
+      "description": "Overview of world history",
+      "subject": "History",
+      "apClasses": ["Human Geography", "US History"],
+      "gradeLevels": [9, 10, 11, 12]
     }
   ],
 "apClasses": [
@@ -62,7 +111,7 @@
     "offered": true,
     "subject": "Math",
     "teacherEmail": "alice@example.com",
-    "prerequisites": ["Trigonometry/Precalculus", "Geometry"],
+    "prerequisites": ["Trigonometry/Precalculus"],
     "gradeLevels": [11, 12]
   },
   {
@@ -88,7 +137,65 @@
     "offered": true,
     "subject": "History",
     "teacherEmail": "rocky@example.com",
+    "prerequisites": ["World History"],
     "gradeLevels": [9, 10, 11, 12]
+  },
+  {
+    "name": "US History",
+    "description": "Explore a deeper understanding of how the forces impact people's lives",
+    "offered": true,
+    "subject": "History",
+    "teacherEmail": "john@example.com",
+    "prerequisites": ["World History"],
+    "gradeLevels": [10, 11, 12]
+  },
+  {
+    "name": "Biology",
+    "description": "Study of living organisms and their interactions",
+    "offered": true,
+    "subject": "Science",
+    "teacherEmail": "brick@example.com",
+    "gradeLevels": [11, 12]
+  },
+  {
+    "name": "Chemistry",
+    "description": "Study of matter and its interactions",
+    "offered": true,
+    "subject": "Science",
+    "teacherEmail": "calvin@example.com",
+    "gradeLevels": [11, 12]
+  },
+  {
+    "name": "Statistics",
+    "description": "Introduce statistical concepts and methods",
+    "offered": true,
+    "subject": "Math",
+    "teacherEmail": "edgar@example.com",
+    "gradeLevels": [11, 12]
+  },
+  {
+    "name": "Seminar",
+    "description": "Learn how to find and use evidence from experts and present the case through writing and presentations",
+    "offered": true,
+    "subject": "English",
+    "teacherEmail": "franklin@example.com",
+    "gradeLevels": [10]
+  },
+  {
+    "name": "Literature and Composition",
+    "description": "Learn writing skills through literary theory and analysis",
+    "offered": true,
+    "subject": "English",
+    "teacherEmail": "gregory@example.com",
+    "gradeLevels": [12]
+  },
+  {
+    "name": "Environmental Science",
+    "description": "Provide principles, concepts, and methodologies to understand the natural world",
+    "offered": true,
+    "subject": "Science",
+    "teacherEmail": "henry@example.com",
+    "gradeLevels": [11, 12]
   }
 ]
 }

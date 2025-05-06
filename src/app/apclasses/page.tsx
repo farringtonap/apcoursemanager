@@ -111,7 +111,9 @@ function ClientSideAPClassList({ classes }: { classes: any[] }) {
                   <Card.Text>
                     <strong>Prerequisites:</strong>
                     {' '}
-                    {cls.prerequisites.length > 0 ? cls.prerequisites.map((p: { name: any; }) => p.name).join(', ') : 'None'}
+                    {cls.prerequisites && cls.prerequisites.length > 0
+                      ? cls.prerequisites.map((p: { name: string }) => p.name).join(', ')
+                      : 'None'}
                   </Card.Text>
                   {!cls.offered && <em>Not Offered This Year</em>}
                 </Card.Body>
