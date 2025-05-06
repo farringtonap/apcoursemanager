@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 /* eslint-disable no-await-in-loop */
 import { PrismaClient, Role } from '@prisma/client';
 import { hash } from 'bcrypt';
@@ -90,16 +91,21 @@ async function main() {
     console.warn('No AP classes found in the configuration.');
     return;
   }
-  for (const c of config.apClasses) {
-    const subject = await prisma.subject.findUnique({ where: { name: c.subject } });
+  const usedTeacherEmails = new Set<string>();
 
-    if (!subject) {
-      console.warn(`  Skipping AP class "${c.name}" - subject or teacher not found`);
-      // eslint-disable-next-line no-continue
+  for (const c of config.apClasses) {
+    if (usedTeacherEmails.has(c.teacherEmail)) {
+      console.warn(`⚠️ Skipping AP class "${c.name}" — teacher ${c.teacherEmail} already assigned.`);
       continue;
     }
 
-    // Find grade levels
+    const subject = await prisma.subject.findUnique({ where: { name: c.subject } });
+
+    if (!subject) {
+      console.warn(`Skipping AP class "${c.name}" — subject "${c.subject}" not found.`);
+      continue;
+    }
+
     const gradeLevels = await prisma.gradeLevel.findMany({
       where: { level: { in: c.gradeLevels } },
     });
@@ -115,9 +121,9 @@ async function main() {
         gradeLevels: {
           connect: gradeLevels.map(g => ({ id: g.id })),
         },
-        // prerequisites: skipped unless added in config
       },
     });
+    usedTeacherEmails.add(c.teacherEmail);
   }
 }
 
