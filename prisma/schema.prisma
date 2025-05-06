@@ -30,7 +30,7 @@ model APClass {
   resources      String?
   offered        Boolean
   subjectId      Int
-  teacherEmail   String
+  teacherEmail   String       @unique
 
   // Relations:
   subject        Subject       @relation(fields: [subjectId], references: [id])

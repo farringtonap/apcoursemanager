@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 /* eslint-disable no-await-in-loop */
 import { PrismaClient, Role } from '@prisma/client';
 import { hash } from 'bcrypt';
@@ -46,6 +47,45 @@ async function main() {
     });
   }
 
+  // Seed AP classes
+  if (!config.apClasses) {
+    console.warn('No AP classes found in the configuration.');
+    return;
+  }
+  const usedTeacherEmails = new Set<string>();
+
+  for (const c of config.apClasses) {
+    if (usedTeacherEmails.has(c.teacherEmail)) {
+      console.warn(`⚠️ Skipping AP class "${c.name}" — teacher ${c.teacherEmail} already assigned.`);
+      continue;
+    }
+
+    const subject = await prisma.subject.findUnique({ where: { name: c.subject } });
+
+    if (!subject) {
+      console.warn(`Skipping AP class "${c.name}" — subject "${c.subject}" not found.`);
+      continue;
+    }
+
+    const gradeLevels = await prisma.gradeLevel.findMany({
+      where: { level: { in: c.gradeLevels } },
+    });
+
+    console.log(`  Creating AP class: ${c.name}`);
+    await prisma.aPClass.create({
+      data: {
+        name: c.name,
+        description: c.description,
+        offered: c.offered,
+        subjectId: subject.id,
+        teacherEmail: c.teacherEmail,
+        gradeLevels: {
+          connect: gradeLevels.map(g => ({ id: g.id })),
+        },
+      },
+    });
+    usedTeacherEmails.add(c.teacherEmail);
+  }
   for (const prereq of config.prerequesites) {
     const subject = await prisma.subject.findUnique({
       where: { name: prereq.subject },
@@ -70,6 +110,18 @@ async function main() {
       }),
     );
 
+    const apClasses = await Promise.all(
+      prereq.apClasses.map(async (ap : string) => {
+        const apClass = await prisma.aPClass.findFirst({ where: { name: ap } });
+        if (!apClass) {
+          console.warn(`⚠️  Grade level ${ap} not found — skipping.`);
+          return null;
+        }
+        return { id: apClass.id };
+      }),
+
+    );
+
     await prisma.preRequisite.upsert({
       where: {
         id: config.prerequesites.indexOf(prereq) + 1,
@@ -81,41 +133,9 @@ async function main() {
         gradeLevels: {
           connect: gradeLevelConnections.filter((gl): gl is { id: number } => gl !== null),
         },
-      },
-    });
-  }
-
-  // Seed AP classes
-  if (!config.apClasses) {
-    console.warn('No AP classes found in the configuration.');
-    return;
-  }
-  for (const c of config.apClasses) {
-    const subject = await prisma.subject.findUnique({ where: { name: c.subject } });
-
-    if (!subject) {
-      console.warn(`  Skipping AP class "${c.name}" - subject or teacher not found`);
-      // eslint-disable-next-line no-continue
-      continue;
-    }
-
-    // Find grade levels
-    const gradeLevels = await prisma.gradeLevel.findMany({
-      where: { level: { in: c.gradeLevels } },
-    });
-
-    console.log(`  Creating AP class: ${c.name}`);
-    await prisma.aPClass.create({
-      data: {
-        name: c.name,
-        description: c.description,
-        offered: c.offered,
-        subjectId: subject.id,
-        teacherEmail: c.teacherEmail,
-        gradeLevels: {
-          connect: gradeLevels.map(g => ({ id: g.id })),
+        apClasses: {
+          connect: apClasses.filter((val) => val !== null),
         },
-        // prerequisites: skipped unless added in config
       },
     });
   }
