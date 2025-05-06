@@ -47,45 +47,6 @@ async function main() {
     });
   }
 
-  for (const prereq of config.prerequesites) {
-    const subject = await prisma.subject.findUnique({
-      where: { name: prereq.subject },
-    });
-
-    if (!subject) {
-      console.warn(`⚠️  Skipping prerequisite "${prereq.name}" — subject "${prereq.subject}" not found.`);
-      // eslint-disable-next-line no-continue
-      continue;
-    }
-
-    console.log(`  Creating prerequisite: ${prereq.name} for subject: ${prereq.subject}`);
-
-    const gradeLevelConnections = await Promise.all(
-      prereq.gradeLevels.map(async (level: number) => {
-        const gl = await prisma.gradeLevel.findUnique({ where: { level } });
-        if (!gl) {
-          console.warn(`⚠️  Grade level ${level} not found — skipping.`);
-          return null;
-        }
-        return { id: gl.id };
-      }),
-    );
-
-    await prisma.preRequisite.upsert({
-      where: {
-        id: config.prerequesites.indexOf(prereq) + 1,
-      },
-      update: {},
-      create: {
-        name: prereq.name,
-        subjectId: subject.id,
-        gradeLevels: {
-          connect: gradeLevelConnections.filter((gl): gl is { id: number } => gl !== null),
-        },
-      },
-    });
-  }
-
   // Seed AP classes
   if (!config.apClasses) {
     console.warn('No AP classes found in the configuration.');
@@ -124,6 +85,59 @@ async function main() {
       },
     });
     usedTeacherEmails.add(c.teacherEmail);
+  }
+  for (const prereq of config.prerequesites) {
+    const subject = await prisma.subject.findUnique({
+      where: { name: prereq.subject },
+    });
+
+    if (!subject) {
+      console.warn(`⚠️  Skipping prerequisite "${prereq.name}" — subject "${prereq.subject}" not found.`);
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    console.log(`  Creating prerequisite: ${prereq.name} for subject: ${prereq.subject}`);
+
+    const gradeLevelConnections = await Promise.all(
+      prereq.gradeLevels.map(async (level: number) => {
+        const gl = await prisma.gradeLevel.findUnique({ where: { level } });
+        if (!gl) {
+          console.warn(`⚠️  Grade level ${level} not found — skipping.`);
+          return null;
+        }
+        return { id: gl.id };
+      }),
+    );
+
+    const apClasses = await Promise.all(
+      prereq.apClasses.map(async (ap : string) => {
+        const apClass = await prisma.aPClass.findFirst({ where: { name: ap } });
+        if (!apClass) {
+          console.warn(`⚠️  Grade level ${ap} not found — skipping.`);
+          return null;
+        }
+        return { id: apClass.id };
+      }),
+
+    );
+
+    await prisma.preRequisite.upsert({
+      where: {
+        id: config.prerequesites.indexOf(prereq) + 1,
+      },
+      update: {},
+      create: {
+        name: prereq.name,
+        subjectId: subject.id,
+        gradeLevels: {
+          connect: gradeLevelConnections.filter((gl): gl is { id: number } => gl !== null),
+        },
+        apClasses: {
+          connect: apClasses.filter((val) => val !== null),
+        },
+      },
+    });
   }
 }
 
