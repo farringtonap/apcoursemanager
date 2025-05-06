@@ -163,8 +163,8 @@ export default function RecommendationFormPage() {
         <div className="w-100" style={{ maxWidth: '600px' }}>
           <h2 className="text-center mb-3">Recommendations</h2>
           <ul className="list-group">
-            {recommendations.map((r, i) => (
-              <li key={i} className="list-group-item">
+            {recommendations.map((r) => (
+              <li key={r} className="list-group-item">
                 {r}
               </li>
             ))}
