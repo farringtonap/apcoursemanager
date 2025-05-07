@@ -123,6 +123,7 @@ export async function updateAPClass(apClass: {
   name: string;
   description: string;
   offered: boolean;
+  resources?: string | null;
   subjectId: number;
   teacherEmail: string;
   gradeLevel: { id: number }[];
@@ -134,6 +135,7 @@ export async function updateAPClass(apClass: {
       name: apClass.name,
       description: apClass.description,
       offered: apClass.offered,
+      resources: apClass.resources,
       subjectId: apClass.subjectId,
       teacherEmail: apClass.teacherEmail,
       gradeLevels: {
@@ -330,4 +332,19 @@ export async function getAllPreRequisites() {
   });
 
   return prerequisites;
+}
+
+// update teacher resources and class description
+export async function updateTeacherClassFields(data: {
+  id: number;
+  description: string;
+  resources: string;
+}) {
+  return prisma.aPClass.update({
+    where: { id: data.id },
+    data: {
+      description: data.description,
+      resources: data.resources,
+    },
+  });
 }

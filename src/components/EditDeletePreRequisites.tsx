@@ -49,10 +49,12 @@ export default function EditDeletePreRequisites() {
     if (deleteConfirmId !== null) {
       try {
         await deletePreRequisite(deleteConfirmId);
-        await fetchData();
         setDeleteConfirmId(null);
         setDeleteConfirmName(null);
         swal('Deleted!', 'Prerequisite has been deleted.', 'success', { timer: 2000 });
+        setTimeout(() => {
+          fetchData();
+        }, 2100);
       } catch (err) {
         console.error(err);
         swal('Error', 'Failed to delete prerequisite.', 'error');
@@ -153,7 +155,10 @@ export default function EditDeletePreRequisites() {
           <Modal.Title>Confirm Deletion</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete <strong>{deleteConfirmName}</strong>?
+          Are you sure you want to delete
+          {' '}
+          <strong>{deleteConfirmName}</strong>
+          ?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setDeleteConfirmId(null)}>Cancel</Button>

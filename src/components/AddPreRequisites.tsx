@@ -29,9 +29,11 @@ export default function AddPreRequisites() {
         gradeLevels: [],
       });
       setError('');
-      reset();
       swal('Success', 'Prerequisite added successfully!', 'success', { timer: 2000 });
-      window.location.reload();
+      reset();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2100);
     } catch (err: any) {
       setError(err.message || 'Something went wrong.');
     }

@@ -16,9 +16,9 @@ const ListPage = async () => {
     } | null,
   );
   const owner = (session && session.user && session.user.email) || '';
-  const stuff = await prisma.stuff.findMany({
+  const myClasses = await prisma.aPClass.findMany({
     where: {
-      owner,
+      teacherEmail: owner, // or `session.user.email`
     },
   });
   // console.log(stuff);
@@ -38,7 +38,7 @@ const ListPage = async () => {
                 </tr>
               </thead>
               <tbody>
-                {stuff.map((item) => (
+                {myClasses.map((item) => (
                   <StuffItem key={item.id} {...item} />
                 ))}
               </tbody>

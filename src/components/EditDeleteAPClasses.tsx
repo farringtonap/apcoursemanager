@@ -75,13 +75,13 @@ const EditDeleteAPClasses: React.FC = () => {
         currentClass.prerequisites.map((pr) => ({
           value: pr.id,
           label: pr.name,
-        }))
+        })),
       );
       setSelectedGradeLevels(
         currentClass.gradeLevels.map((gl) => ({
           value: gl.id,
           label: gl.level.toString(),
-        }))
+        })),
       );
     }
   }, [currentClass]);

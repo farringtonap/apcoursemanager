@@ -42,7 +42,9 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
       await createAPClass(parsedData);
       swal('Success', 'AP Class has been added', 'success', { timer: 2000 });
       reset();
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2100);
     } catch (err: any) {
       swal('Error', err.message, 'error');
     }
@@ -144,7 +146,7 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
                   <div className="invalid-feedback d-block">{errors.preRequisiteIds?.message}</div>
                 </Form.Group>
 
-                {/* ✅ Updated Grade Levels to use react-select */}
+                {/* Updated Grade Levels to use react-select */}
                 <Form.Group>
                   <Form.Label>Grade Levels</Form.Label>
                   <Select
