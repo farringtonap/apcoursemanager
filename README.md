@@ -37,3 +37,20 @@ tests/ # Playwright tests
     - `npx prisma db migrate`
     - `npx prisma db seed`
 7. Afterwards, run `npm run dev` and verify that local development works. 
+
+### Getting the AI Working
+
+1. Install python & pip (pip should come with python install)
+2. `python -m venv venv` to create a virtual environment called `venv`
+3. Activate the virtual environment 
+    -  Mac / Linux: `source path/to/venv/Scripts/Activate`
+    -  Windows: `path/to/venv/Scripts/Activate`
+4. cd into python-backend
+5. Run `pip install -r requirements.txt`
+6. cd back into root directory and run `uvicorn main:app --reload --port 8000`
+
+### General Workflow
+
+1. Pull from `main` 
+2. Run development environment
+3. (**Optional**) Run AI (if working on that)
