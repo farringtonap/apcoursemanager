@@ -55,15 +55,6 @@ const AdminPage = async () => {
                     <PencilSquare />
                     Edit
                   </Button>
-                  <Button
-                    variant="outline-danger"
-                    href="/"
-                    size="sm"
-                    className="d-flex justify-content-center align-items-center gap-1 fw-medium"
-                  >
-                    <XSquare />
-                    Delete
-                  </Button>
                 </div>
               </div>
             </Col>
