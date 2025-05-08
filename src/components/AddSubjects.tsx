@@ -17,6 +17,8 @@ export default function AddSubject() {
       setError('');
       swal('Success', 'Subject added successfully!', 'success', { timer: 2000 });
       reset();
+      // This is done to make sure that the page doesn't instantly refresh after completion
+      // Will happen 1 second after the success message appears
       setTimeout(() => {
         window.location.reload();
       }, 2100);
