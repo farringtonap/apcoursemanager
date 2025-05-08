@@ -7,7 +7,7 @@ import
 import { prisma } from '@/lib/prisma';
 import { adminProtectedPage } from '@/lib/page-protection';
 import authOptions from '@/lib/authOptions';
-import { PencilSquare, PlusCircle, XSquare } from 'react-bootstrap-icons';
+import { PencilSquare, PlusCircle } from 'react-bootstrap-icons';
 
 const AdminPage = async () => {
   const session = await getServerSession(authOptions);
