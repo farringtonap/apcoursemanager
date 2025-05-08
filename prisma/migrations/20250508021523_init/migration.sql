@@ -40,6 +40,14 @@ CREATE TABLE "grade_levels" (
 );
 
 -- CreateTable
+CREATE TABLE "AuthorizedUser" (
+    "email" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'TEACHER',
+
+    CONSTRAINT "AuthorizedUser_pkey" PRIMARY KEY ("email")
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
@@ -82,6 +90,9 @@ CREATE TABLE "_PreRequisiteGradeLevels" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "ap_classes_name_key" ON "ap_classes"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "ap_classes_teacherEmail_key" ON "ap_classes"("teacherEmail");
 
 -- CreateIndex
@@ -89,6 +100,9 @@ CREATE UNIQUE INDEX "subjects_name_key" ON "subjects"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "grade_levels_level_key" ON "grade_levels"("level");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "AuthorizedUser_email_key" ON "AuthorizedUser"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
