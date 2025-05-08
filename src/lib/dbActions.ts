@@ -14,9 +14,9 @@ export async function createUser(info: {
   firstName: string,
   lastName: string,
   password: string,
-  }) {
+}) {
   try {
-    const authUID = await prisma.authorizedUser.findUnique({ where: { email: info.email }});
+    const authUID = await prisma.authorizedUser.findUnique({ where: { email: info.email } });
     if (!authUID) {
       throw new Error('You are not an authorized user!');
     } else {
@@ -28,7 +28,7 @@ export async function createUser(info: {
           firstName: info.firstName,
           lastName: info.lastName,
           role: authUID.role,
-        }
+        },
       });
     }
   } catch (err) {
@@ -80,13 +80,13 @@ export async function updateUser(data:{
 }
 
 /**
- * Deletes a user from the database, this is effectively removing a site maintainer 
+ * Deletes a user from the database, this is effectively removing a site maintainer
  * @param data an object containing the ID of the user
  * @returns {Error} if there was an issue deleting the user, otherwise, empty string
  */
 export async function deleteUser(id:number) {
   try {
-    await prisma.user.delete({where: { id }});
+    await prisma.user.delete({ where: { id } });
   } catch (err) {
     return (err);
   }
@@ -140,7 +140,6 @@ export async function updateAuthorizedUser(data:{
   return ('');
 }
 
-
 /**
  * Allows admins to delete a site maintainer. This is similar to
  * revoking their access.
@@ -148,7 +147,7 @@ export async function updateAuthorizedUser(data:{
  */
 export async function deleteAuthorizedUser(email: string) {
   await prisma.authorizedUser.delete({
-    where: { email: email },
+    where: { email },
   });
 }
 
