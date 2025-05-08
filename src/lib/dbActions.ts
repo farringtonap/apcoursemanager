@@ -29,6 +29,62 @@ export async function createUser(info: {
 }
 
 /**
+ * Updates a User's information on the admin side
+ * @param data a `User` object
+ * @returns {Error} if there is problems with updating the user or an empty string if the user updated
+ */
+export async function updateUser(data:{
+  id: number,
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+  role: string,
+}) {
+  try {
+    // This means admin did not update password and left it blank
+    if (data.password === '') {
+      await prisma.user.update({
+        where: { id: data.id },
+        data: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          role: data.role as Role,
+        },
+      });
+    } else {
+      await prisma.user.update({
+        where: { id: data.id },
+        data: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          role: data.role as Role,
+          password: data.password,
+        },
+      });
+    }
+  } catch (err) {
+    return (err);
+  }
+  return ('');
+}
+
+/**
+ * Deletes a user from the database, this is effectively removing a site maintainer 
+ * @param data an object containing the ID of the user
+ * @returns {Error} if there was an issue deleting the user, otherwise, empty string
+ */
+export async function deleteUser(id:number) {
+  try {
+    await prisma.user.delete({where: { id }});
+  } catch (err) {
+    return (err);
+  }
+
+  return ('');
+}
+
+/**
  * Allows admins to add authorized site maintainers
  * @param info, an object containing the users email
 */
@@ -48,13 +104,41 @@ export async function createAuthorizedUser(info: { email: string, role: string }
 }
 
 /**
+ * Updates an authorized user's permission level
+ * @param data a `User` object
+ * @returns {Error} or an empty String (represents okay)
+ */
+export async function updateAuthorizedUser(data:{
+  id: number,
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+  role: string,
+}) {
+  try {
+    // Only want to update the permission / role level
+    await prisma.user.update({
+      where: { id: Number(data.id) },
+      data: {
+        role: data.role as Role,
+      },
+    });
+  } catch (err) {
+    return (err);
+  }
+  return ('');
+}
+
+
+/**
  * Allows admins to delete a site maintainer. This is similar to
  * revoking their access.
  * @param info, an object containing the users email
  */
-export async function deleteAuthorizedUser(info: { email: string }) {
+export async function deleteAuthorizedUser(email: string) {
   await prisma.authorizedUser.delete({
-    where: { email: info.email },
+    where: { email: email },
   });
 }
 
