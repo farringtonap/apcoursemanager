@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-
 'use client';
 
 import { useState } from 'react';
@@ -29,16 +27,18 @@ export default function AddSubject() {
 
   return (
     <div className="mt-4">
-      <h4>Add New Subject</h4>
+      <h4 className="text-white">Add New Subject</h4>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">
-          <label htmlFor="subjectName" className="form-label">Subject Name</label>
-          <input
-            id="subjectName"
-            {...register('name', { required: true })}
-            className="form-control"
-            type="text"
-          />
+          <label htmlFor="subjectName" className="form-label text-white">
+            Subject Name
+            <input
+              id="subjectName"
+              {...register('name', { required: true })}
+              className="form-control"
+              type="text"
+            />
+          </label>
         </div>
 
         <button type="submit" className="btn btn-primary">Add Subject</button>

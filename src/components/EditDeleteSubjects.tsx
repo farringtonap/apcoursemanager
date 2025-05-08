@@ -77,7 +77,7 @@ export default function EditDeleteSubjects() {
 
   return (
     <div className="mt-5">
-      <h4>Edit/Delete Existing Subjects</h4>
+      <h4 className="text-white">Edit/Delete Existing Subjects</h4>
       <table className="table table-striped mt-3">
         <thead>
           <tr>
