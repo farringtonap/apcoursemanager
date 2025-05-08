@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-const AddAPClassSchema = Yup.object().shape({
+export const AddAPClassSchema = Yup.object().shape({
   name: Yup.string().required('Class name is required'),
   description: Yup.string().required('Description is required'),
   resources: Yup.string(),
@@ -16,4 +16,16 @@ const AddAPClassSchema = Yup.object().shape({
   preRequisiteIds: Yup.array().of(Yup.number()).optional(),
 });
 
-export default AddAPClassSchema;
+export const AddAuthorizedUserSchema = Yup.object({
+  email: Yup.string().email().required(),
+  role: Yup.string().oneOf(['TEACHER', 'ADMIN']).required().default('TEACHER'),
+});
+
+export const EditUserSchema = Yup.object({
+  id: Yup.number().required(),
+  email: Yup.string().email().required(),
+  password: Yup.string().required(),
+  firstName: Yup.string().required(),
+  lastName: Yup.string().required(),
+  role: Yup.string().oneOf(['TEACHER', 'ADMIN']).required(),
+});
