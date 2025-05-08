@@ -10,7 +10,7 @@ import swal from 'sweetalert';
 import { redirect } from 'next/navigation';
 import { createAPClass } from '@/lib/dbActions';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import AddAPClassSchema from '@/lib/validationSchemas';
+import { AddAPClassSchema } from '@/lib/validationSchemas';
 import Select from 'react-select';
 
 interface AddAPClassFormProps {
