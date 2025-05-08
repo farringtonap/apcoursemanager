@@ -49,7 +49,7 @@ async def read_ap_classes(db: AsyncSession = Depends(get_db)):
     return result.scalars().all()
 
 @app.get("/recommend")
-async def recommend(db: AsyncSession = Depends(get_db), top_k: int = 5):
+async def recommend(db: AsyncSession = Depends(get_db), top_k: int = 3):
     # 1) fetch latest student
     students = (await db.execute(select(StudentProfile).order_by(StudentProfile.createdAt))).scalars().all()
     if not students:
