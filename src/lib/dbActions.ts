@@ -11,21 +11,31 @@ import { prisma } from './prisma';
  */
 export async function createUser(info: {
   email: string,
-  password: string,
   firstName: string,
   lastName: string,
-  role: string }) {
-  const password = await hash(info.password, 10);
-  const newUser = await prisma.user.create({
-    data: {
-      email: info.email,
-      password,
-      firstName: info.firstName,
-      lastName: info.lastName,
-      role: info.role as Role,
-    },
-  });
-  return newUser;
+  password: string,
+  }) {
+  try {
+    const authUID = await prisma.authorizedUser.findUnique({ where: { email: info.email }});
+    if (!authUID) {
+      throw new Error('You are not an authorized user!');
+    } else {
+      const password = await hash(info.password, 10);
+      await prisma.user.create({
+        data: {
+          email: info.email,
+          password,
+          firstName: info.firstName,
+          lastName: info.lastName,
+          role: authUID.role,
+        }
+      });
+    }
+  } catch (err) {
+    return err;
+  }
+
+  return '';
 }
 
 /**
