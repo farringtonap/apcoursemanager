@@ -95,6 +95,15 @@ const NavBar: React.FC = () => {
                     Add/Edit Classes
                   </Nav.Link>
                   <Nav.Link
+                    id="edit-subjects-nav"
+                    href="/CRUD-Subjects"
+                    key="edit-subjects"
+                    active={pathName === '/CRUD-Subjects'}
+                    style={navLinkStyle}
+                  >
+                    Add/Edit Subjects
+                  </Nav.Link>
+                  <Nav.Link
                     id="edit-prerequisites-nav"
                     href="/CRUD-PreReqs"
                     key="edit-prerequisites"

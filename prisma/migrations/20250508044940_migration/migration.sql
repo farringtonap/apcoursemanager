@@ -82,6 +82,9 @@ CREATE TABLE "_PreRequisiteGradeLevels" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "ap_classes_name_key" ON "ap_classes"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "ap_classes_teacherEmail_key" ON "ap_classes"("teacherEmail");
 
 -- CreateIndex
