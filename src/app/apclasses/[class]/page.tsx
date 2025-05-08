@@ -8,9 +8,12 @@ type Props = {
 };
 
 export default async function APClassDetailPage({ params }: Props) {
+  const id = Number(params.class);
+  if (Number.isNaN(id)) return notFound();
+
   const classItem = await prisma.aPClass.findUnique({
     where: {
-      id: Number(params.class),
+      id,
     },
     select: {
       name: true,
@@ -87,9 +90,7 @@ export default async function APClassDetailPage({ params }: Props) {
       <p>
         <strong>Prerequisites:</strong>
         {' '}
-        {classItem.prerequisites.length > 0
-          ? classItem.prerequisites.map((p) => p.name).join(', ')
-          : 'None'}
+        {classItem.prerequisites.length > 0 ? classItem.prerequisites.map((p) => p.name).join(', ') : 'None'}
       </p>
     </div>
   );

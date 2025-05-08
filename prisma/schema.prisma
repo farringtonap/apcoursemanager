@@ -24,13 +24,13 @@ generator client {
 /// - Many-to-many with GradeLevel (indicating which grades are eligible).
 ///
 model APClass {
-  id           Int     @id @default(autoincrement())
-  name         String
-  description  String
-  resources    String?
-  offered      Boolean
-  subjectId    Int
-  teacherEmail String  @unique
+  id             Int           @id @default(autoincrement())
+  name           String        @unique
+  description    String
+  resources      String?
+  offered        Boolean
+  subjectId      Int
+  teacherEmail   String       @unique
 
   // Relations:
   subject       Subject        @relation(fields: [subjectId], references: [id])
@@ -120,10 +120,11 @@ model User {
   email     String @unique
   password  String
   firstName String
-  lastName  String
-  role      Role   @default(TEACHER)
+  lastName String
+  role     Role   @default(TEACHER)
+  
+  apClass  APClass[]
 
-  apClass APClass?
 }
 
 model StudentProfile {

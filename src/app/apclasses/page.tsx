@@ -1,12 +1,6 @@
-/* eslint-disable max-len */
-/* eslint-disable @next/next/no-async-client-component */
-
-'use client';
-
-import { useState } from 'react';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
-import { Row, Col, Card } from 'react-bootstrap';
+import { Row, Col, Card, CardBody, CardText, CardTitle } from 'react-bootstrap';
 
 export default async function APClassesPage() {
   const classes = await prisma.aPClass.findMany({
@@ -21,25 +15,23 @@ export default async function APClassesPage() {
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  return <ClientSideAPClassList classes={classes} />;
-}
-
-function ClientSideAPClassList({ classes }: { classes: any[] }) {
-  const [query, setQuery] = useState('');
-
-  const filtered = classes.filter(cls => cls.name.toLowerCase().includes(query.toLowerCase()));
-
   return (
     <div style={{ padding: '20px' }}>
-      {/* Title and Search Bar Section */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', marginBottom: '20px' }}>
+      {/* Title */}
+      <div style={
+        { display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '20px',
+          marginBottom: '20px' }
+        }
+      >
         <h1
           className="text-white"
           style={{
             margin: 0,
             padding: '12px 20px',
-            backgroundColor: 'rgba(0, 0, 0, 0.3)', // Subtle transparency for a modern effect
+            backgroundColor: 'rgba(0, 0, 0, 0.4)', // Subtle transparency for a modern effect
             borderRadius: '20px', // Large rounded corners for a sleek look
             color: '#fff',
             textAlign: 'center',
@@ -48,26 +40,11 @@ function ClientSideAPClassList({ classes }: { classes: any[] }) {
         >
           AP Classes
         </h1>
-
-        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-          <input
-            type="text"
-            placeholder="Search by class name"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            style={{
-              padding: '10px',
-              width: '100%',
-              maxWidth: '400px',
-              fontSize: '16px',
-            }}
-          />
-        </div>
       </div>
 
       {/* Cards Display Section */}
       <Row xs={1} sm={2} md={3} lg={4} className="g-4" style={{ marginTop: '20px' }}>
-        {filtered.map((cls) => (
+        {classes.map((cls) => (
           <Col>
             <Link
               key={cls.name}
@@ -86,41 +63,42 @@ function ClientSideAPClassList({ classes }: { classes: any[] }) {
                   cursor: cls.offered ? 'pointer' : 'not-allowed',
                 }}
               >
-                <Card.Body className="d-flex flex-column">
-                  <Card.Title style={{ display: 'inline-flex', alignItems: 'center' }}>
+                <CardBody className="d-flex flex-column">
+                  <CardTitle style={{ display: 'inline-flex', alignItems: 'center' }}>
                     {cls.name.replace('-', ' ').toUpperCase()}
                     <span style={{ marginLeft: '10px' }}>
                       {cls.offered ? '✅' : '❌'}
                     </span>
-                  </Card.Title>
-                  <Card.Text>
+                  </CardTitle>
+                  <CardText>
                     <strong>Subject:</strong>
                     {' '}
                     {cls.subject.name}
-                  </Card.Text>
-                  <Card.Text>
+                  </CardText>
+                  <CardText>
                     <strong>Description:</strong>
                     {' '}
                     {cls.description}
-                  </Card.Text>
-                  <Card.Text>
+                  </CardText>
+                  <CardText>
                     <strong>Grade Levels:</strong>
                     {' '}
                     {cls.gradeLevels.map((g: { level: any; }) => g.level).join(', ')}
-                  </Card.Text>
-                  <Card.Text>
+                  </CardText>
+                  <CardText>
                     <strong>Prerequisites:</strong>
                     {' '}
-                    {cls.prerequisites.length > 0 ? cls.prerequisites.map((p: { name: any; }) => p.name).join(', ') : 'None'}
-                  </Card.Text>
+                    {cls.prerequisites && cls.prerequisites.length > 0
+                      ? cls.prerequisites.map((p: { name: string }) => p.name).join(', ')
+                      : 'None'}
+                  </CardText>
                   {!cls.offered && <em>Not Offered This Year</em>}
-                </Card.Body>
+                </CardBody>
               </Card>
             </Link>
           </Col>
         ))}
       </Row>
     </div>
-
   );
 }
