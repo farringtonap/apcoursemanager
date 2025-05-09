@@ -1,11 +1,20 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { Card, Form } from 'react-bootstrap';
 
 const PYTHON_API_URL = process.env.NEXT_PUBLIC_PYTHON_API_URL || 'http://localhost:8000';
 
 export default function RecommendationFormPage() {
+  // Read once at build time, provide a sane default for local dev:
+  const RAW_API_URL = process.env.NEXT_PUBLIC_PYTHON_API_URL ?? 'http://localhost:8000';
+  // Trim any trailing slash so we never end up with "//recommend"
+  const API_BASE_URL = RAW_API_URL.replace(/\/$/, '');
+
+  useEffect(() => {
+    console.log('🌐 Using Python API at:', API_BASE_URL);
+  }, [API_BASE_URL]);
+
   // form fields
   const [interestsText, setInterestsText] = useState('');
   const [coursesText, setCoursesText] = useState('');
@@ -14,33 +23,23 @@ export default function RecommendationFormPage() {
 
   // UI states
   const [loading, setLoading] = useState(false);
-  const [savedProfile, setSavedProfile] = useState<{
-    id: number;
-    createdAt: string;
-  } | null>(null);
+  const [savedProfile, setSavedProfile] = useState<{ id: number; createdAt: string } | null>(null);
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [error, setError] = useState('');
 
-  /* eslint-disable-next-line consistent-return */
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
     setRecommendations([]);
     setSavedProfile(null);
 
-    // 1) parse
-    const interests = interestsText
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
-    const previousCourses = coursesText
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
+    // parse
+    const interests = interestsText.split(',').map((s) => s.trim()).filter(Boolean);
+    const previousCourses = coursesText.split(',').map((s) => s.trim()).filter(Boolean);
     const gpaNum = parseFloat(GPA);
     const gradeNum = parseInt(gradeLevel, 10);
 
-    // 2) validate
+    // validate
     if (!interests.length) {
       setError('Please enter at least one interest.');
       return;
@@ -52,24 +51,24 @@ export default function RecommendationFormPage() {
 
     setLoading(true);
     try {
+      // 1) Save the student profile
       const resp = await fetch('/api/student', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          interests,
-          previousCourses,
-          GPA: gpaNum,
-          gradeLevel: gradeNum,
-        }),
+        body: JSON.stringify({ interests, previousCourses, GPA: gpaNum, gradeLevel: gradeNum }),
       });
       if (!resp.ok) {
-        const err = await resp.json().catch(() => null);
+        const err = (await resp.json().catch(() => null)) as any;
         throw new Error(err?.error || 'Failed to save profile');
       }
       const profile = await resp.json();
       setSavedProfile({ id: profile.id, createdAt: profile.createdAt });
-      const recResp = await fetch(`${PYTHON_API_URL}/recommend`);
-      if (!recResp.ok) throw new Error('Recommendation service error');
+
+      // 2) Fetch recommendations from your Python API
+      const recResp = await fetch(`${API_BASE_URL}/recommend`);
+      if (!recResp.ok) {
+        throw new Error(`Recommendation service error: ${recResp.status}`);
+      }
       const recs: string[] = await recResp.json();
       setRecommendations(recs);
     } catch (err: any) {
@@ -117,6 +116,18 @@ export default function RecommendationFormPage() {
               <div className="form-text text-center">Comma-separate your interests.</div>
             </div>
 
+        <Form.Group className="mb-3" controlId="coursesText">
+          <Form.Label>Previous Courses</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="e.g. Algebra II, Biology"
+            value={coursesText}
+            onChange={(e) => setCoursesText(e.target.value)}
+          />
+          <Form.Text className="text-muted">
+            Comma-separate courses you’ve taken.
+          </Form.Text>
+        </Form.Group>
             <Form.Group className="mb-3" controlId="courses">
               <Form.Label><strong>Previous Courses</strong></Form.Label>
               <Form.Control
