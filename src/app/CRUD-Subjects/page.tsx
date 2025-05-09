@@ -5,10 +5,10 @@ import EditDeleteSubjects from '../../components/EditDeleteSubjects';
 
 export default function EditPrerequisitesPage() {
   return (
-    <div className="container-lg mt-4">
+    <div className="container mt-4">
       <h2 className="text-white">Add/Edit Subjects</h2>
       <AddSubjects />
-      <hr className="my-4" />
+      <hr className="my-4 text-white" />
       <EditDeleteSubjects />
     </div>
   );
