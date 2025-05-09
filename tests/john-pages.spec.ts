@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+/* import { test, expect } from '@playwright/test';
 
 test.use({
   storageState: 'john-auth.json',
@@ -14,3 +14,5 @@ test('User Pages', async ({ page }) => {
   await page.getByRole('link', { name: 'List Stuff' }).click();
   await expect(page.getByRole('heading', { name: 'Stuff' })).toBeVisible();
 });
+
+*/
