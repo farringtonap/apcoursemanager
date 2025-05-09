@@ -1,15 +1,13 @@
 'use client';
 
 import { useState, FormEvent, useEffect } from 'react';
-import { Card, Form } from 'react-bootstrap';
-
-const PYTHON_API_URL = process.env.NEXT_PUBLIC_PYTHON_API_URL || 'http://localhost:8000';
+import { Form } from 'react-bootstrap';
 
 export default function RecommendationFormPage() {
-  // Read once at build time, provide a sane default for local dev:
-  const RAW_API_URL = process.env.NEXT_PUBLIC_PYTHON_API_URL ?? 'http://localhost:8000';
-  // Trim any trailing slash so we never end up with "//recommend"
-  const API_BASE_URL = RAW_API_URL.replace(/\/$/, '');
+  // Read the build-time env var (fallback to localhost for dev)
+  // Then strip ALL trailing slashes so we never end up with //recommend
+  const API_BASE_URL = (process.env.NEXT_PUBLIC_PYTHON_API_URL ?? 'http://localhost:8000')
+    .replace(/\/+$/, '');
 
   useEffect(() => {
     console.log('🌐 Using Python API at:', API_BASE_URL);
@@ -51,7 +49,7 @@ export default function RecommendationFormPage() {
 
     setLoading(true);
     try {
-      // 1) Save the student profile
+      // 1) Save the student profile via Next.js API
       const resp = await fetch('/api/student', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -64,7 +62,7 @@ export default function RecommendationFormPage() {
       const profile = await resp.json();
       setSavedProfile({ id: profile.id, createdAt: profile.createdAt });
 
-      // 2) Fetch recommendations from your Python API
+      // 2) Fetch recommendations
       const recResp = await fetch(`${API_BASE_URL}/recommend`);
       if (!recResp.ok) {
         throw new Error(`Recommendation service error: ${recResp.status}`);
@@ -81,40 +79,25 @@ export default function RecommendationFormPage() {
 
   return (
     <div className="container mt-4 d-flex flex-column align-items-center">
-      <h1
-        className="mb-4 text-center text-white"
-        style={{
-          margin: 0,
-          padding: '12px 20px',
-          backgroundColor: 'rgba(0, 0, 0, 0.4)', // Subtle transparency for a modern effect
-          borderRadius: '20px', // Large rounded corners for a sleek look
-          color: '#fff',
-          textAlign: 'center',
-          boxShadow: '0 6px 12px rgba(0, 0, 0, 0.5)', // Subtle shadow for floating effect
-        }}
-      >
-        AP Class Recommendation
-      </h1>
+      <h1 className="mb-4 text-center">AP Class Recommendation</h1>
 
-      <Card className="w-100 mb-4" style={{ maxWidth: '600px' }}>
-        <Card.Body>
-          <form onSubmit={handleSubmit} className="w-100">
-            {error && <div className="alert alert-danger text-center">{error}</div>}
+      <form onSubmit={handleSubmit} className="mb-4 w-100" style={{ maxWidth: '600px' }}>
+        {error && <div className="alert alert-danger text-center">{error}</div>}
 
-            <div className="mb-3">
-              <label htmlFor="interests" className="form-label d-block text-center">
-                <strong>Your Interests</strong>
-                <input
-                  id="interestsText"
-                  type="text"
-                  className="form-control mt-2"
-                  placeholder="e.g. calculus, robotics, AI"
-                  value={interestsText}
-                  onChange={e => setInterestsText(e.target.value)}
-                />
-              </label>
-              <div className="form-text text-center">Comma-separate your interests.</div>
-            </div>
+        <div className="mb-3">
+          <label htmlFor="interestsText" className="form-label d-block text-center">
+            Your Interests
+            <input
+              id="interestsText"
+              type="text"
+              className="form-control mt-2"
+              placeholder="e.g. calculus, robotics, AI"
+              value={interestsText}
+              onChange={(e) => setInterestsText(e.target.value)}
+            />
+          </label>
+          <div className="form-text text-center">Comma-separate your interests.</div>
+        </div>
 
         <Form.Group className="mb-3" controlId="coursesText">
           <Form.Label>Previous Courses</Form.Label>
@@ -128,79 +111,64 @@ export default function RecommendationFormPage() {
             Comma-separate courses you’ve taken.
           </Form.Text>
         </Form.Group>
-            <Form.Group className="mb-3" controlId="courses">
-              <Form.Label><strong>Previous Courses</strong></Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="e.g. Algebra II, Biology"
-                value={coursesText}
-                onChange={(e) => setCoursesText(e.target.value)}
+
+        <div className="row">
+          <div className="col-md-6 mb-3">
+            <label htmlFor="GPA" className="form-label text-center d-block">
+              GPA
+              <input
+                id="GPA"
+                type="number"
+                step="0.01"
+                className="form-control mt-2"
+                value={GPA}
+                onChange={(e) => setGPA(e.target.value)}
               />
-              <Form.Text className="text-muted">
-                Comma-separate courses you&apos;ve taken.
-              </Form.Text>
-            </Form.Group>
-
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <label htmlFor="GPA" className="form-label text-center d-block">
-                  <strong>GPA</strong>
-                  <input
-                    id="GPA"
-                    type="number"
-                    step="0.01"
-                    className="form-control mt-2"
-                    value={GPA}
-                    onChange={e => setGPA(e.target.value)}
-                  />
-                </label>
-              </div>
-              <div className="col-md-6 mb-3">
-                <label htmlFor="gradeLevel" className="form-label text-center d-block">
-                  <strong>Grade Level</strong>
-                  <select
-                    id="gradeLevel"
-                    className="form-select mt-2"
-                    value={gradeLevel}
-                    onChange={e => setGradeLevel(e.target.value)}
-                  >
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                  </select>
-                </label>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <button type="submit" className="btn btn-primary px-5" disabled={loading}>
-                {loading ? 'Saving & Recommending...' : 'Submit'}
-              </button>
-            </div>
-          </form>
-
-          {savedProfile && (
-          <div className="alert alert-success text-center mt-4">
-            {`Profile saved (ID: ${savedProfile.id}) at ${new Date(savedProfile.createdAt).toLocaleString()}.`}
+            </label>
           </div>
-          )}
-
-          {recommendations.length > 0 && (
-          <div className="mt-4">
-            <h2 className="text-center mb-3">Recommendations</h2>
-            <ul className="list-group">
-              {recommendations.map((r) => (
-                <li key={r} className="list-group-item">
-                  {r}
-                </li>
-              ))}
-            </ul>
+          <div className="col-md-6 mb-3">
+            <label htmlFor="gradeLevel" className="form-label text-center d-block">
+              Grade Level
+              <select
+                id="gradeLevel"
+                className="form-select mt-2"
+                value={gradeLevel}
+                onChange={(e) => setGradeLevel(e.target.value)}
+              >
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+            </label>
           </div>
-          )}
-        </Card.Body>
-      </Card>
+        </div>
+
+        <div className="text-center">
+          <button type="submit" className="btn btn-primary px-5" disabled={loading}>
+            {loading ? 'Saving & Recommending...' : 'Submit'}
+          </button>
+        </div>
+      </form>
+
+      {savedProfile && (
+        <div className="alert alert-success text-center w-100" style={{ maxWidth: '600px' }}>
+          {`Profile saved (ID: ${savedProfile.id}) at ${new Date(savedProfile.createdAt).toLocaleString()}.`}
+        </div>
+      )}
+
+      {recommendations.length > 0 && (
+        <div className="w-100" style={{ maxWidth: '600px' }}>
+          <h2 className="text-center mb-3">Recommendations</h2>
+          <ul className="list-group">
+            {recommendations.map((r) => (
+              <li key={r} className="list-group-item">
+                {r}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
-
   );
 }
