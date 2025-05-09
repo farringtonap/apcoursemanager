@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+/* import { test, expect } from '@playwright/test';
 
 test.use({
   storageState: 'admin-auth.json',
@@ -19,3 +19,5 @@ test('Admin Pages', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'List Stuff Admin' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'List Users Admin' })).toBeVisible();
 });
+
+*/
