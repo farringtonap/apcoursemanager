@@ -147,7 +147,7 @@ const EditDeleteAPClasses: React.FC = () => {
 
   return (
     <div className="mt-5">
-      <h3>Manage Existing AP Classes</h3>
+      <h3 className="text-center">Manage Existing AP Classes</h3>
       <Table striped bordered hover responsive>
         <thead>
           <tr>

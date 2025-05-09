@@ -77,7 +77,20 @@ export default function EditDeleteSubjects() {
 
   return (
     <div className="mt-5">
-      <h4 className="text-white">Edit/Delete Existing Subjects</h4>
+      <h4
+        className="text-white"
+        style={{
+          margin: 0,
+          padding: '12px 20px',
+          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+          borderRadius: '20px',
+          color: '#fff',
+          boxShadow: '0 6px 12px rgba(0, 0, 0, 0.5)',
+          display: 'inline-block',
+        }}
+      >
+        Edit/Delete Existing Subjects
+      </h4>
       <table className="table table-striped mt-3">
         <thead>
           <tr>
