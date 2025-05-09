@@ -23,6 +23,7 @@ test.describe('AP Recommendation Page', () => {
     await expect(page.locator('.alert-success')).toContainText('Profile saved');
 
     // Then recommendations list should appear
+    // This can only work when the python server is running
     const items = await page.locator('.list-group-item').allTextContents();
     expect(items.length).toBeGreaterThan(0);
     // Optionally verify one expected class name:
