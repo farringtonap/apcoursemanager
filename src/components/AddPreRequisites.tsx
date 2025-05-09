@@ -4,9 +4,10 @@
 
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { createPreRequisite, getAllSubjects } from '@/lib/dbActions';
 import { Subject } from '@prisma/client';
 import swal from 'sweetalert';
+import { createPreRequisite, getAllSubjects } from '@/lib/dbActions';
+import { Card } from 'react-bootstrap';
 
 export default function AddPreRequisites() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -40,39 +41,43 @@ export default function AddPreRequisites() {
   };
 
   return (
-    <div className="mt-4">
-      <h4>Add New Prerequisite</h4>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-3">
-          <label htmlFor="prerequisiteName" className="form-label">Prerequisite Name</label>
-          <input
-            id="prerequisiteName"
-            {...register('name', { required: true })}
-            className="form-control"
-            type="text"
-          />
-        </div>
+    <Card className="mt-4 shadow-sm">
+      <Card.Body>
+        <Card.Title>Add New Prerequisite</Card.Title>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="mb-3">
+            <label htmlFor="prerequisiteName" className="form-label">
+              <strong>Prerequisite Name</strong>
+            </label>
+            <input
+              id="prerequisiteName"
+              {...register('name', { required: true })}
+              className="form-control"
+              type="text"
+            />
+          </div>
 
-        <div className="mb-3">
-          <label htmlFor="subjectSelect" className="form-label">Subject</label>
-          <select
-            id="subjectSelect"
-            {...register('subject', { required: true })}
-            className="form-select"
-          >
-            <option value="">-- Select a Subject --</option>
-            {subjects.map((subject) => (
-              <option key={subject.id} value={subject.name}>
-                {subject.name}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="mb-3">
+            <label htmlFor="subjectSelect" className="form-label"><strong>Subject</strong></label>
+            <select
+              id="subjectSelect"
+              {...register('subject', { required: true })}
+              className="form-select"
+            >
+              <option value="">-- Select a Subject --</option>
+              {subjects.map((subject) => (
+                <option key={subject.id} value={subject.name}>
+                  {subject.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <button type="submit" className="btn btn-primary">Add Prerequisite</button>
+          <button type="submit" className="btn btn-primary">Add Prerequisite</button>
 
-        {error && <div className="text-danger mt-2">{error}</div>}
-      </form>
-    </div>
+          {error && <div className="text-danger mt-2">{error}</div>}
+        </form>
+      </Card.Body>
+    </Card>
   );
 }

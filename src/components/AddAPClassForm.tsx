@@ -73,7 +73,7 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
                 <Row>
                   <Col>
                     <Form.Group>
-                      <Form.Label>Class Name</Form.Label>
+                      <Form.Label><strong>Class Name</strong></Form.Label>
                       <input
                         type="text"
                         {...register('name')}
@@ -84,7 +84,7 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
                   </Col>
                   <Col>
                     <Form.Group>
-                      <Form.Label>Offered</Form.Label>
+                      <Form.Label><strong>Offered</strong></Form.Label>
                       <Form.Select {...register('offered')} className={errors.offered ? 'is-invalid' : ''}>
                         <option value="">Select</option>
                         <option value="true">Yes</option>
@@ -98,7 +98,7 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
                 <Row>
                   <Col>
                     <Form.Group>
-                      <Form.Label>Teacher Email</Form.Label>
+                      <Form.Label><strong>Teacher Email</strong></Form.Label>
                       <input
                         type="email"
                         {...register('teacherEmail')}
@@ -110,7 +110,7 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
                 </Row>
 
                 <Form.Group>
-                  <Form.Label>Subject Type</Form.Label>
+                  <Form.Label><strong>Subject Type</strong></Form.Label>
                   <Form.Select {...register('subjectType')} className={errors.subjectType ? 'is-invalid' : ''}>
                     <option value="">Select Subject</option>
                     <option value="Math">Math</option>
@@ -123,7 +123,7 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
                 </Form.Group>
 
                 <Form.Group>
-                  <Form.Label>Description</Form.Label>
+                  <Form.Label><strong>Description</strong></Form.Label>
                   <textarea
                     {...register('description')}
                     className={`form-control ${errors.description ? 'is-invalid' : ''}`}
@@ -133,7 +133,7 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
 
                 {/* Pre-Requisites */}
                 <Form.Group>
-                  <Form.Label>Pre-Requisites</Form.Label>
+                  <Form.Label><strong>Pre-Requisites</strong></Form.Label>
                   <Select
                     isMulti
                     options={preRequisites.map((pr) => ({ value: pr.id, label: pr.name }))}
@@ -148,7 +148,7 @@ const AddAPClassForm: React.FC<AddAPClassFormProps> = ({ preRequisites }) => {
 
                 {/* Updated Grade Levels to use react-select */}
                 <Form.Group>
-                  <Form.Label>Grade Levels</Form.Label>
+                  <Form.Label><strong>Grade Levels</strong></Form.Label>
                   <Select
                     isMulti
                     options={gradeLevelOptions}

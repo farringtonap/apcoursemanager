@@ -33,7 +33,7 @@ export default function AddSubject() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">
           <label htmlFor="subjectName" className="form-label text-white">
-            Subject Name
+            <strong>Subject Name</strong>
             <input
               id="subjectName"
               {...register('name', { required: true })}
