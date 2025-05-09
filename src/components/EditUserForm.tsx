@@ -76,11 +76,11 @@ export default function EditUserForm({ user }: { user: User }) {
         await deleteUser(id);
         await deleteAuthorizedUser(user.email);
         swal('Deleted!', 'The account has been removed', 'success');
-      } catch(err) {
+      } catch (err) {
         swal('Error', 'Failed to delete account', 'error');
       }
     }
-  }
+  };
 
   return (
     <Container fluid className="fw-bold justify-content-center align-items-center">
