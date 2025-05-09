@@ -47,12 +47,12 @@ export default function AddSubject() {
   };
 
   return (
-    <div className="mt-4">
-      <h4 data-testid="add-subject-heading">Add New Subject</h4>
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-100">
-        <div className="mb-3 w-100">
-          <label className="form-label text-white w-100">
-            Subject Name
+    <div className="mt-4">]
+      <h4 className="text-white">Add New Subject</h4>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="mb-3">
+          <label htmlFor="subjectName" className="form-label text-white">
+            <strong>Subject Name</strong>\
             <input
               type="text"
               className="form-control w-100"

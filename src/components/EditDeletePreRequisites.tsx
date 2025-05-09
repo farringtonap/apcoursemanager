@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getAllPreRequisites, updatePreRequisite, deletePreRequisite, getAllSubjects } from '@/lib/dbActions';
 import { Subject } from '@prisma/client';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import swal from 'sweetalert';
+import { getAllPreRequisites, updatePreRequisite, deletePreRequisite, getAllSubjects } from '@/lib/dbActions';
 
 export default function EditDeletePreRequisites() {
   const [preRequisites, setPreRequisites] = useState<any[]>([]);
@@ -81,7 +81,18 @@ export default function EditDeletePreRequisites() {
 
   return (
     <div className="mt-5">
-      <h4>Edit/Delete Existing Prerequisites</h4>
+      <h4 style={{
+        margin: 0,
+        padding: '12px 20px',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        borderRadius: '20px',
+        color: '#fff',
+        boxShadow: '0 6px 12px rgba(0, 0, 0, 0.5)',
+        display: 'inline-block',
+      }}
+      >
+        Edit/Delete Existing Prerequisites
+      </h4>
       <table className="table table-striped mt-3">
         <thead>
           <tr>

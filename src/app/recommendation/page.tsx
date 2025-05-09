@@ -1,11 +1,18 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 
-const PYTHON_API_URL = process.env.NEXT_PUBLIC_PYTHON_API_URL || 'http://localhost:8000';
-
 export default function RecommendationFormPage() {
+  // Read the build-time env var (fallback to localhost for dev)
+  // Then strip ALL trailing slashes so we never end up with //recommend
+  const API_BASE_URL = (process.env.NEXT_PUBLIC_PYTHON_API_URL ?? 'http://localhost:8000')
+    .replace(/\/+$/, '');
+
+  useEffect(() => {
+    console.log('🌐 Using Python API at:', API_BASE_URL);
+  }, [API_BASE_URL]);
+
   // form fields
   const [interestsText, setInterestsText] = useState('');
   const [coursesText, setCoursesText] = useState('');
@@ -14,33 +21,23 @@ export default function RecommendationFormPage() {
 
   // UI states
   const [loading, setLoading] = useState(false);
-  const [savedProfile, setSavedProfile] = useState<{
-    id: number;
-    createdAt: string;
-  } | null>(null);
+  const [savedProfile, setSavedProfile] = useState<{ id: number; createdAt: string } | null>(null);
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [error, setError] = useState('');
 
-  /* eslint-disable-next-line consistent-return */
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
     setRecommendations([]);
     setSavedProfile(null);
 
-    // 1) parse
-    const interests = interestsText
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
-    const previousCourses = coursesText
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
+    // parse
+    const interests = interestsText.split(',').map((s) => s.trim()).filter(Boolean);
+    const previousCourses = coursesText.split(',').map((s) => s.trim()).filter(Boolean);
     const gpaNum = parseFloat(GPA);
     const gradeNum = parseInt(gradeLevel, 10);
 
-    // 2) validate
+    // validate
     if (!interests.length) {
       setError('Please enter at least one interest.');
       return;
@@ -52,24 +49,24 @@ export default function RecommendationFormPage() {
 
     setLoading(true);
     try {
+      // 1) Save the student profile via Next.js API
       const resp = await fetch('/api/student', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          interests,
-          previousCourses,
-          GPA: gpaNum,
-          gradeLevel: gradeNum,
-        }),
+        body: JSON.stringify({ interests, previousCourses, GPA: gpaNum, gradeLevel: gradeNum }),
       });
       if (!resp.ok) {
-        const err = await resp.json().catch(() => null);
+        const err = (await resp.json().catch(() => null)) as any;
         throw new Error(err?.error || 'Failed to save profile');
       }
       const profile = await resp.json();
       setSavedProfile({ id: profile.id, createdAt: profile.createdAt });
-      const recResp = await fetch(`${PYTHON_API_URL}/recommend`);
-      if (!recResp.ok) throw new Error('Recommendation service error');
+
+      // 2) Fetch recommendations
+      const recResp = await fetch(`${API_BASE_URL}/recommend`);
+      if (!recResp.ok) {
+        throw new Error(`Recommendation service error: ${recResp.status}`);
+      }
       const recs: string[] = await recResp.json();
       setRecommendations(recs);
     } catch (err: any) {
@@ -83,11 +80,12 @@ export default function RecommendationFormPage() {
   return (
     <div className="container mt-4 d-flex flex-column align-items-center">
       <h1 className="mb-4 text-center">AP Class Recommendation</h1>
+
       <form onSubmit={handleSubmit} className="mb-4 w-100" style={{ maxWidth: '600px' }}>
         {error && <div className="alert alert-danger text-center">{error}</div>}
 
         <div className="mb-3">
-          <label htmlFor="interests" className="form-label d-block text-center">
+          <label htmlFor="interestsText" className="form-label d-block text-center">
             Your Interests
             <input
               id="interestsText"
@@ -95,13 +93,13 @@ export default function RecommendationFormPage() {
               className="form-control mt-2"
               placeholder="e.g. calculus, robotics, AI"
               value={interestsText}
-              onChange={e => setInterestsText(e.target.value)}
+              onChange={(e) => setInterestsText(e.target.value)}
             />
           </label>
           <div className="form-text text-center">Comma-separate your interests.</div>
         </div>
 
-        <Form.Group className="mb-3" controlId="courses">
+        <Form.Group className="mb-3" controlId="coursesText">
           <Form.Label>Previous Courses</Form.Label>
           <Form.Control
             type="text"
@@ -110,7 +108,7 @@ export default function RecommendationFormPage() {
             onChange={(e) => setCoursesText(e.target.value)}
           />
           <Form.Text className="text-muted">
-            Comma-separate courses you&apos;ve taken.
+            Comma-separate courses you’ve taken.
           </Form.Text>
         </Form.Group>
 
@@ -124,7 +122,7 @@ export default function RecommendationFormPage() {
                 step="0.01"
                 className="form-control mt-2"
                 value={GPA}
-                onChange={e => setGPA(e.target.value)}
+                onChange={(e) => setGPA(e.target.value)}
               />
             </label>
           </div>
@@ -135,7 +133,7 @@ export default function RecommendationFormPage() {
                 id="gradeLevel"
                 className="form-select mt-2"
                 value={gradeLevel}
-                onChange={e => setGradeLevel(e.target.value)}
+                onChange={(e) => setGradeLevel(e.target.value)}
               >
                 <option value="9">9</option>
                 <option value="10">10</option>
