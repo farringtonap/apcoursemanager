@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { Form } from 'react-bootstrap';
+import { Card, Form } from 'react-bootstrap';
 
 const PYTHON_API_URL = process.env.NEXT_PUBLIC_PYTHON_API_URL || 'http://localhost:8000';
 
@@ -82,95 +82,114 @@ export default function RecommendationFormPage() {
 
   return (
     <div className="container mt-4 d-flex flex-column align-items-center">
-      <h1 className="mb-4 text-center">AP Class Recommendation</h1>
-      <form onSubmit={handleSubmit} className="mb-4 w-100" style={{ maxWidth: '600px' }}>
-        {error && <div className="alert alert-danger text-center">{error}</div>}
+      <h1
+        className="mb-4 text-center text-white"
+        style={{
+          margin: 0,
+          padding: '12px 20px',
+          backgroundColor: 'rgba(0, 0, 0, 0.4)', // Subtle transparency for a modern effect
+          borderRadius: '20px', // Large rounded corners for a sleek look
+          color: '#fff',
+          textAlign: 'center',
+          boxShadow: '0 6px 12px rgba(0, 0, 0, 0.5)', // Subtle shadow for floating effect
+        }}
+      >
+        AP Class Recommendation
+      </h1>
 
-        <div className="mb-3">
-          <label htmlFor="interests" className="form-label d-block text-center">
-            Your Interests
-            <input
-              id="interestsText"
-              type="text"
-              className="form-control mt-2"
-              placeholder="e.g. calculus, robotics, AI"
-              value={interestsText}
-              onChange={e => setInterestsText(e.target.value)}
-            />
-          </label>
-          <div className="form-text text-center">Comma-separate your interests.</div>
-        </div>
+      <Card className="w-100 mb-4" style={{ maxWidth: '600px' }}>
+        <Card.Body>
+          <form onSubmit={handleSubmit} className="w-100">
+            {error && <div className="alert alert-danger text-center">{error}</div>}
 
-        <Form.Group className="mb-3" controlId="courses">
-          <Form.Label>Previous Courses</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="e.g. Algebra II, Biology"
-            value={coursesText}
-            onChange={(e) => setCoursesText(e.target.value)}
-          />
-          <Form.Text className="text-muted">
-            Comma-separate courses you&apos;ve taken.
-          </Form.Text>
-        </Form.Group>
+            <div className="mb-3">
+              <label htmlFor="interests" className="form-label d-block text-center">
+                <strong>Your Interests</strong>
+                <input
+                  id="interestsText"
+                  type="text"
+                  className="form-control mt-2"
+                  placeholder="e.g. calculus, robotics, AI"
+                  value={interestsText}
+                  onChange={e => setInterestsText(e.target.value)}
+                />
+              </label>
+              <div className="form-text text-center">Comma-separate your interests.</div>
+            </div>
 
-        <div className="row">
-          <div className="col-md-6 mb-3">
-            <label htmlFor="GPA" className="form-label text-center d-block">
-              GPA
-              <input
-                id="GPA"
-                type="number"
-                step="0.01"
-                className="form-control mt-2"
-                value={GPA}
-                onChange={e => setGPA(e.target.value)}
+            <Form.Group className="mb-3" controlId="courses">
+              <Form.Label><strong>Previous Courses</strong></Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="e.g. Algebra II, Biology"
+                value={coursesText}
+                onChange={(e) => setCoursesText(e.target.value)}
               />
-            </label>
+              <Form.Text className="text-muted">
+                Comma-separate courses you&apos;ve taken.
+              </Form.Text>
+            </Form.Group>
+
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label htmlFor="GPA" className="form-label text-center d-block">
+                  <strong>GPA</strong>
+                  <input
+                    id="GPA"
+                    type="number"
+                    step="0.01"
+                    className="form-control mt-2"
+                    value={GPA}
+                    onChange={e => setGPA(e.target.value)}
+                  />
+                </label>
+              </div>
+              <div className="col-md-6 mb-3">
+                <label htmlFor="gradeLevel" className="form-label text-center d-block">
+                  <strong>Grade Level</strong>
+                  <select
+                    id="gradeLevel"
+                    className="form-select mt-2"
+                    value={gradeLevel}
+                    onChange={e => setGradeLevel(e.target.value)}
+                  >
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <button type="submit" className="btn btn-primary px-5" disabled={loading}>
+                {loading ? 'Saving & Recommending...' : 'Submit'}
+              </button>
+            </div>
+          </form>
+
+          {savedProfile && (
+          <div className="alert alert-success text-center mt-4">
+            {`Profile saved (ID: ${savedProfile.id}) at ${new Date(savedProfile.createdAt).toLocaleString()}.`}
           </div>
-          <div className="col-md-6 mb-3">
-            <label htmlFor="gradeLevel" className="form-label text-center d-block">
-              Grade Level
-              <select
-                id="gradeLevel"
-                className="form-select mt-2"
-                value={gradeLevel}
-                onChange={e => setGradeLevel(e.target.value)}
-              >
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-              </select>
-            </label>
+          )}
+
+          {recommendations.length > 0 && (
+          <div className="mt-4">
+            <h2 className="text-center mb-3">Recommendations</h2>
+            <ul className="list-group">
+              {recommendations.map((r) => (
+                <li key={r} className="list-group-item">
+                  {r}
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-
-        <div className="text-center">
-          <button type="submit" className="btn btn-primary px-5" disabled={loading}>
-            {loading ? 'Saving & Recommending...' : 'Submit'}
-          </button>
-        </div>
-      </form>
-
-      {savedProfile && (
-        <div className="alert alert-success text-center w-100" style={{ maxWidth: '600px' }}>
-          {`Profile saved (ID: ${savedProfile.id}) at ${new Date(savedProfile.createdAt).toLocaleString()}.`}
-        </div>
-      )}
-
-      {recommendations.length > 0 && (
-        <div className="w-100" style={{ maxWidth: '600px' }}>
-          <h2 className="text-center mb-3">Recommendations</h2>
-          <ul className="list-group">
-            {recommendations.map((r) => (
-              <li key={r} className="list-group-item">
-                {r}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+          )}
+        </Card.Body>
+      </Card>
     </div>
+
   );
 }
