@@ -48,7 +48,7 @@ export default function AddSubject() {
 
   return (
     <div className="mt-4">
-      <h4 className="text-white" data-testid="add-subject-heading">Add New Subject</h4>
+      <h4 data-testid="add-subject-heading">Add New Subject</h4>
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-100">
         <div className="mb-3 w-100">
           <label className="form-label text-white w-100">
