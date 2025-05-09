@@ -55,3 +55,6 @@ settings.production.json
 venv/
 **/__pycache__
 __pycache__
+
+# Playwright
+node_modules/

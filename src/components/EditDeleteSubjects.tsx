@@ -5,6 +5,7 @@ import { Subject } from '@prisma/client';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import swal from 'sweetalert';
+// eslint-disable-next-line import/extensions
 import { getAllSubjects, updateSubject, deleteSubject } from '@/lib/dbActions';
 
 export default function EditDeleteSubjects() {
@@ -76,7 +77,7 @@ export default function EditDeleteSubjects() {
   };
 
   return (
-    <div className="mt-5">
+    <div className="mt-5 text-white">
       <h4>Edit/Delete Existing Subjects</h4>
       <table className="table table-striped mt-3">
         <thead>
